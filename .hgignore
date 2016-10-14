@@ -1,0 +1,9 @@
+
+syntax: regexp
+.hgignore
+PDFToolbox/PDFToolbox.csproj.user
+PDFToolbox/PdfSharp.dll
+PDFToolbox/Properties/Settings.settings
+Testing.pdf
+syntax: glob
+PDFToolbox/PdfSharp/

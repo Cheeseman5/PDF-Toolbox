@@ -1,0 +1,189 @@
+﻿<Window x:Class="PDFToolbox.MainWindow"
+        x:Name="winMain"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        
+        xmlns:ptb="clr-namespace:PDFToolbox"
+        xmlns:localViews="clr-namespace:PDFToolbox.Views"
+        xmlns:localVMs="clr-namespace:PDFToolbox.ViewModels"
+        xmlns:localAdorners="clr-namespace:PDFToolbox.Adorners"
+        xmlns:localConverters="clr-namespace:PDFToolbox.Converters"
+        Title="PDF Toolbox" Height="500" Width="720" Background="#FFCCDAFF" MinWidth="400" MinHeight="200" Closing="winMain_Closing">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/Default.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Window.DataContext>
+        <localVMs:MainViewModel />
+    </Window.DataContext>
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding KeyDeletePressed}" Key="Delete"/>
+    </Window.InputBindings>
+
+    <TabControl Background="#FFCCDAFF">
+        <TabItem x:Name="PageMain" Header="Main">
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel x:Name="dplMainMenu" Background="#FF1051FF" Grid.Row="0">
+                    <!--Rectangle Grid.Row="0" Fill="#FF1051FF"/ -->
+                    <StackPanel Grid.Row="0" DockPanel.Dock="Left" Orientation="Horizontal">
+                        <Button Content="Add Doc"  Command="{Binding AddDoc}" Padding="10,2" Margin="2"/>
+                        <Button Content="Save" Command="{Binding SaveDoc}" Padding="20,2" Margin="2"/>
+                        <Button Content="CCW" Command="{Binding RotPageCCW90}" Padding="10,2" Margin="2"/>
+                        <Button Content="CW" Command="{Binding RotPageCW90}" Padding="10,2" Margin="2"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Clear All" Command="{Binding ClearDocs}" Padding="10,2" Margin="2" />
+                        <Button Content="Remove Document" Command="{Binding RemoveDoc}" Padding="10,2" Margin="2" />
+                        <Button Content="Remove Page" Command="{Binding RemovePage}" Padding="10,2" Margin="2" />
+                    </StackPanel>
+                </DockPanel>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="tbxDocumentName" Text="{Binding Path=SelectedDocument.DocName, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" />
+                    <Slider x:Name="sldPageScale" Grid.Column="1" Value="0.25" Maximum="4" Minimum="0.1" TickFrequency="0.25" TickPlacement="TopLeft" LargeChange="0.5" />
+                </Grid>
+        
+                <Popup x:Name="ppuPageEditor" IsOpen="{Binding IsEditingPage}" PlacementTarget="{Binding ElementName=dplMainMenu}" Width="{Binding ElementName=grdViewers,Path=Width}" 
+                       Placement="Bottom" Margin="5" Grid.RowSpan="2" Grid.Row="1">
+                    <Border BorderBrush="Black" BorderThickness="5" Background="AliceBlue" CornerRadius="5" Width="{Binding ElementName=ppuPageEditor, Path=Width}" Height="{Binding ElementName=ppuPageEditor, Path=Height}">
+                        <!-- Encapsulate Canvas in Viewbox to more easily scale -->
+                        <Canvas Background="{Binding EditPage}">
+                    
+                            <Canvas.Resources>
+                                <DataTemplate DataType="{x:Type localVMs:PageViewModel}">
+                            
+                                </DataTemplate>
+                            </Canvas.Resources>
+                        </Canvas>
+                    </Border>
+                </Popup>
+        
+                <Grid x:Name="grdViewers" Margin="5,5,5,5" Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" MinWidth="100"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*" MinWidth="100"/>
+                    </Grid.ColumnDefinitions>
+                    <ListBox Name="lbxDocuments" ItemsSource="{Binding Documents}" SelectedItem="{Binding SelectedDocument, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Background="#FFCAF5FF" MinHeight="50" AllowDrop="True" Drop="lbxDocuments_Drop" DragEnter="lbxDocuments_DragEnter" PreviewMouseLeftButtonDown="lbxDocuments_PreviewMouseLeftButtonDown" PreviewMouseMove="lbxDocuments_PreviewMouseMove">
+                        <ListBox.Resources>
+                            <DataTemplate DataType="{x:Type localVMs:DocumentViewModel}">
+                                <Grid Margin="5">
+                                    <Rectangle Fill="DarkCyan" Width="64" Height="64"/>
+                                    <Image Source="{Binding Image, UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" SnapsToDevicePixels="True"/>
+                                    <Label Content="{Binding DocName}" HorizontalContentAlignment="Right"/>
+                                    <Label Content="{Binding PageCount, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" ContentStringFormat="0 pages" VerticalAlignment="Bottom" HorizontalContentAlignment="Left"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.Resources>
+                    </ListBox>
+                    <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="#FF6491B6"/>
+                    <ListBox Name="lbxPages" ItemsSource="{Binding SelectedDocument.Pages}" ItemTemplate="{Binding localVMs:PageViewModel}" Background="#FFAFDBFF" 
+                             SelectedItem="{Binding SelectedPage, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" SelectionMode="Extended"
+                             AllowDrop="True" Drop="lbxPages_Drop" DragEnter="lbxPages_DragEnter"
+                             PreviewMouseLeftButtonDown="lbxPages_PreviewMouseLeftButtonDown" PreviewMouseMove="lbxPages_PreviewMouseMove">
+                        <ListBox.Resources>
+                            
+                            <!--DataTemplate DataType="{x:Type localVMs:PageViewModel}">
+                                <localViews:PageView PdfPage="{Binding RelativeSource={RelativeSource AncestorType={x:Type localVMs:PageViewModel}}}" />
+                            </-->
+                            <DataTemplate DataType="{x:Type localVMs:PageViewModel}">
+                                <Grid Margin="10" RenderTransformOrigin="0.5, 0.5" >
+                                    <Grid.LayoutTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="{Binding Value, ElementName=sldPageScale}" ScaleY="{Binding Value, ElementName=sldPageScale}"/>
+                                            <RotateTransform Angle="{Binding Rotation}"/>
+                                        </TransformGroup>
+                                    </Grid.LayoutTransform>
+                                    <Rectangle Fill="CornflowerBlue" Width="32" Height="32"/>
+                                    <Image Source="{Binding Image}" Stretch="None" SnapsToDevicePixels="True"/>
+                                    <Label Content="{Binding DocName}"  HorizontalContentAlignment="Right" FontSize="24"/>
+                                    <Label Content="{Binding Number}" VerticalAlignment="Bottom" FontSize="24"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.Resources>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <!--ListBox.ItemContainerStyle>
+                            <Style x:Name="DefaultPdfPageStyle"/>
+                            <!-Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                <EventSetter Event="MouseDoubleClick" Handler="lbiPage_MouseDoubleClick"/>
+                            </Style->
+                        </ListBox.ItemContainerStyle-->
+                    </ListBox>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem x:Name="PageEdit" Header="Edit Page">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0" Background="#FF1051FF">
+                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                        <ToggleButton x:Name="AddTextToggleButton" Content="T" Width="25" Margin="3" IsChecked="{Binding ToggleButtonAddText, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Separator Width="2" HorizontalAlignment="Center" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                        <TextBox x:Name="AddTextTextBox" Text="{Binding Path=TextToAddToCanvas, UpdateSourceTrigger=PropertyChanged}" Width="250" Margin="3"/>
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Separator Width="2" HorizontalAlignment="Center" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                        <Button Content="Clear all" Command="{Binding ClearCanvas}" Margin="3"/>
+                    </StackPanel>
+                </DockPanel>
+                <ScrollViewer Grid.Row="1">
+                    <ItemsControl x:Name="PageEditItemsControl" ItemsSource="{Binding SelectedPage.Strings,UpdateSourceTrigger=PropertyChanged}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas x:Name="PageEditCanvas" Grid.Row="1" Height="{Binding SelectedPage.Image.Height}" Width="{Binding SelectedPage.Image.Width}" 
+                                        ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseLeftButtonUp="PageEditCanvas_MouseLeftButtonUp"
+                                        RenderTransformOrigin="0.5,0.5">
+                                    <!--xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                                    i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                                            <i:InvokeCommandAction Command="{Binding LeftMouseUpCanvas}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers-->
+                                    <Canvas.Background>
+                                        <ImageBrush x:Name="PageEditCanvasBackgroundImageBrush" ImageSource="{Binding SelectedPage.Image}" Stretch="None" AlignmentY="Top" AlignmentX="Left">
+                                            <ImageBrush.Transform>
+                                                <RotateTransform Angle="{Binding SelectedPage.Rotation}"/>
+                                            </ImageBrush.Transform>
+                                        </ImageBrush>
+                                    </Canvas.Background>
+                                </Canvas>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style>
+                                <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding String}" MinWidth="10"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>

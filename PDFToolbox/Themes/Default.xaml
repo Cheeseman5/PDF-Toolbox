@@ -1,0 +1,182 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ptb="clr-namespace:PDFToolbox"
+                    xmlns:localVMs="clr-namespace:PDFToolbox.ViewModels">
+
+    <Style x:Key="DefaultPdfPageStyle" TargetType="Image">
+        <Setter Property="Control.DataContext">
+            <Setter.Value>
+                <DataTemplate DataType="{x:Type localVMs:PageViewModel}">
+                    
+                    <Grid>
+                        <!--Grid.LayoutTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
+                                <RotateTransform Angle="{Binding Rotation}"/>
+                            </TransformGroup>
+                        </Grid.LayoutTransform-->
+                        
+                        <Rectangle Fill="CadetBlue" Width="32" Height="32"/>
+                        <Image Source="{Binding Image}" Stretch="None" SnapsToDevicePixels="True"/>
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+    <Style x:Key="DefaultButtonFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border>
+                        <Rectangle Margin="2" StrokeThickness="1" Stroke="#600000000" StrokeDashArray="1 2"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style x:Key="DefaultButton" TargetType="Button">
+        <Style.Resources>
+            <Color x:Key="ControlNormalColor">#FFC0C0CE</Color>
+            <Color x:Key="ControlMouseOverColor">#FFAFA3B9</Color>
+            <Color x:Key="DisabledControlColor">#FFF2F2F2</Color>
+            <Color x:Key="DisabledForegroundColor">#FFBFBFBF</Color>
+            <Color x:Key="ControlPressedColor">#FF211AA9</Color>
+        </Style.Resources>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource DefaultButtonFocusVisual}"/>
+        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="MinWidth" Value="32" />
+        <Setter Property="Foreground" Value="#FFFFFFFF"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border TextBlock.Foreground="{TemplateBinding Foreground}" x:Name="Border" Padding="{TemplateBinding Padding}" Margin="{TemplateBinding Margin}">
+                        <Border.Background>
+                            <SolidColorBrush Color="{DynamicResource ControlNormalColor}" />
+                        </Border.Background>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition GeneratedDuration="0:0:0.5"/>
+                                    <VisualTransition GeneratedDuration="0" To="Pressed"/>
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Border">
+                                            <EasingColorKeyFrame KeyTime="0" Value="{StaticResource ControlMouseOverColor}"/>
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Border">
+                                            <EasingColorKeyFrame KeyTime="0" Value="{StaticResource ControlPressedColor}"/>
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Border">
+                                            <EasingColorKeyFrame KeyTime="0" Value="{StaticResource DisabledControlColor}"/>
+                                        </ColorAnimationUsingKeyFrames>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="Border">
+                                            <EasingColorKeyFrame KeyTime="0" Value="{StaticResource DisabledForegroundColor}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True" />
+                    </Border>
+                    
+                    
+                    <!--<Grid>
+                        <Rectangle Fill="{TemplateBinding Property=Background}" Stroke="{TemplateBinding Property=BorderBrush}"/>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>-->
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--End button-->
+    
+    <Style x:Key="DefaultPageSnippetViewer" TargetType="{x:Type ptb:DocSnippet}">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ptb:DocSnippet">
+                    <Grid x:Name="PART_body" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Margin="{TemplateBinding Margin}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Button x:Name="PART_button" Grid.Row="0" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"/>
+                        <Label x:Name="PART_label" Grid.Row="1" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--End DocSnippet-->
+    
+    <!--DataTemplate x:Key="ItemTemplate">
+        <Grid >
+            <Border Visibility="Hidden" BorderBrush="Navy" BorderThickness="3" CornerRadius="5" Background="SkyBlue"/>
+            <Rectangle Fill="DarkCyan" Width="150" Height="200"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SelectedTemplate">
+        <Grid >
+            <Border Visibility="Visible" BorderBrush="Navy" BorderThickness="3" CornerRadius="5" Background="SkyBlue"/>
+            <Rectangle Fill="DarkCyan" Width="150" Height="200"/>
+            
+        </Grid>
+    </DataTemplate>
+
+    <Style TargetType="{x:Type ListBoxItem}" x:Key="ContainerStyle">
+        <Setter Property="ContentTemplate" Value="{StaticResource ItemTemplate}"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="ContentTemplate" Value="{StaticResource SelectedTemplate}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style-->
+    
+    <Style TargetType="{x:Type ListBox}">
+        <Style.Resources>
+            <!--SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/ -->
+        </Style.Resources>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <!--'WrapPanel' can be replaced with other controls if you want it to display differently-->
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <!--Setter Property="ItemContainerStyle" Value="{StaticResource ContainerStyle}"/-->
+        <!--Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <!-ptb:PDFPage /->
+
+                    
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>-->
+    </Style>
+    
+    
+    
+</ResourceDictionary>
