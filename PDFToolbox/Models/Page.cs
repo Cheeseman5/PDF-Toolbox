@@ -37,6 +37,8 @@ namespace PDFToolbox.Models
         public Page()
         {
             id = nextID++;
+            rotation = new PdfNumber(0f);
+            originalRotation = new PdfNumber(0f);
         }
 
         public void Copy(Page page)

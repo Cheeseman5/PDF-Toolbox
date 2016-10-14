@@ -106,6 +106,7 @@ namespace PDFToolbox.IO
                         importedPage = targetPdf.GetImportedPage(srcReader, vm.Number);
                         pageStamp = targetPdf.CreatePageStamp(importedPage);
 
+                        //add any strings
                         foreach(Common.UIString str in vm.Strings)
                         {
                             ColumnText.ShowTextAligned(pageStamp.GetOverContent(),
@@ -115,8 +116,8 @@ namespace PDFToolbox.IO
                                 (float)(importedPage.Height - str.Y - (str.Height * 0.75)),
                                 0);
                         }
-
-                        pageDict.Put(PdfName.ROTATE, new PdfNumber(vm.Rotation % 360f));
+                        // apply any added rotation
+                        pageDict.Put(PdfName.ROTATE, new PdfNumber((vm.FlatRotation) % 360f));
                         pageStamp.AlterContents();
                         targetPdf.AddPage(importedPage);
                         
@@ -166,8 +167,8 @@ namespace PDFToolbox.IO
             page.number = ++pageNum;
             page.fName = (info.IsTempPath ? info.FileName : info.FullFileName);
             //FIXME: this is making the pages render with wrong rotation unless rotation is zero
-            page.SetRotation((float)reader.GetPageRotation(pageNum));
-            //page.originalRotation = new PdfNumber(reader.GetPageRotation(pageNum));
+            //page.SetRotation((float)reader.GetPageRotation(pageNum));
+            page.originalRotation = new PdfNumber(reader.GetPageRotation(pageNum));
 
             return page;
         }

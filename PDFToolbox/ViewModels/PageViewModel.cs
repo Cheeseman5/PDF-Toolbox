@@ -103,6 +103,18 @@ namespace PDFToolbox.ViewModels
                 OnPropertyChanged("Rotation");
             }
         }
+
+        // FIXME: find a better way to handle 2 rotations. Maybe find a way to reduce it down to 1 again...
+        public float FlatRotation
+        {
+            get { return _page.rotation.FloatValue + _page.originalRotation.FloatValue; }
+            /*set
+            {
+                _page.SetRotation(value);
+                OnPropertyChanged("Rotation");
+            }*/
+        }
+
         // Delete?
         /*public bool IsImagePreview
         {
