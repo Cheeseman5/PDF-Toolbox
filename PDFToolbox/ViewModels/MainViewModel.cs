@@ -37,6 +37,12 @@ namespace PDFToolbox.ViewModels
         {
             get { return _rotPageCCW90; }
         }
+        private ICommand _splitDoc = null;
+        public ICommand SplitDoc
+        {
+            get { return _splitDoc; }
+        }
+
 
         private ICommand _clearDocs = null;
         public ICommand ClearDocs
@@ -245,6 +251,7 @@ namespace PDFToolbox.ViewModels
             _saveDoc = new Common.Commands.DelegateCommand(OnSaveDoc);
             _rotPageCW90 = new Common.Commands.DelegateCommand(OnRotatePageCW90);
             _rotPageCCW90 = new Common.Commands.DelegateCommand(OnRotatePageCCW90);
+            _splitDoc = new Common.Commands.DelegateCommand(OnSplitDoc);
 
             _clearDocs = new Common.Commands.DelegateCommand(OnClearDocs);
             _removePage = new Common.Commands.DelegateCommand(OnRemovePage);
@@ -285,6 +292,12 @@ namespace PDFToolbox.ViewModels
         {
             RotatePage(SelectedPage, -90f);
         }
+
+        private void OnSplitDoc(object param)
+        {
+            SplitDocument(SelectedDocument, 3);
+        }
+
 
         private void OnClearDocs(object param)
         {
@@ -360,7 +373,7 @@ namespace PDFToolbox.ViewModels
 
             DocumentViewModel docVM = new DocumentViewModel(doc);
             Documents.Insert(nextIndex, docVM);
-            SelectedDocument = docVM;
+            //SelectedDocument = docVM;
 
             return docVM;
         }
@@ -455,8 +468,44 @@ namespace PDFToolbox.ViewModels
             oldDoc.Pages.Remove(page);
             newDoc.Pages.Add(page);
         }
-        #endregion
 
+        public void SplitDocument(ViewModels.DocumentViewModel docVM, int splitInterval)
+        {
+            ViewModels.DocumentViewModel newDocVM;
+            Models.Document newDoc;
+            int docCount = 0;
+
+            if (docVM == null || splitInterval <= 0) return;
+
+            newDocVM = docVM;
+
+            //newDoc = new Models.Document();
+            //newDocVM = new DocumentViewModel(newDoc);
+
+            while (docVM.PageCount> splitInterval)
+            {
+                // current doc VM reached its goal page-count - start the next one...
+                if (newDocVM.PageCount >= splitInterval)
+                {
+                    newDoc = new Models.Document();
+
+                    newDoc.fName = docVM.DocName;
+                    newDoc.Rename("-" + (++docCount), true);
+                    newDoc.image = docVM.Pages[0].Image;
+
+                    newDocVM = new DocumentViewModel(newDoc);
+                    Documents.Add(newDocVM);
+                    //docCount++;
+                }
+                else
+                {
+                    newDocVM.Pages.Add(docVM.Pages[splitInterval]);
+                    docVM.Pages.RemoveAt(splitInterval);
+                }
+            }
+        }
+        #endregion
+        
         #region Utils
         public bool IsValidDropItem(IDataObject data)
         {
@@ -468,6 +517,7 @@ namespace PDFToolbox.ViewModels
                     IO.FileIO.IsExtensionSupported(files)
                 ));
         }
+        
         #endregion
     }
 }

@@ -25,6 +25,7 @@
 
     <TabControl Background="#FFCCDAFF">
         <TabItem x:Name="PageMain" Header="Main">
+            <!--Popup x:Name="popupSplit"/-->
             <Grid>
 
                 <Grid.RowDefinitions>
@@ -40,6 +41,7 @@
                         <Button Content="Save" Command="{Binding SaveDoc}" Padding="20,2" Margin="2"/>
                         <Button Content="CCW" Command="{Binding RotPageCCW90}" Padding="10,2" Margin="2"/>
                         <Button Content="CW" Command="{Binding RotPageCW90}" Padding="10,2" Margin="2"/>
+                        <Button Content="Split..." Command="{Binding SplitDoc}" Padding="10,2" Margin="2"/>
                     </StackPanel>
                     <StackPanel Grid.Row="0" DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="Clear All" Command="{Binding ClearDocs}" Padding="10,2" Margin="2" />
