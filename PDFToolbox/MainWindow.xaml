@@ -142,11 +142,11 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Margin="5" Text="Input:" FontWeight="Bold"/>
+                            <TextBlock Margin="5" Text="How many pages do you want in each document?" FontWeight="Bold"/>
                             <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox" PreviewTextInput="InputTextBox_PreviewTextInput"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button x:Name="YesButton" Margin="5" Content="Accept" Background="LightSeaGreen" Click="YesButton_Click"/>
-                                <Button x:Name="NoButton" Margin="5" Content="Cancel" Background="Firebrick" Click="NoButton_Click" />
+                                <Button x:Name="YesButton" Margin="5" Width="75" Content="Split" Background="LightSeaGreen" Click="YesButton_Click"/>
+                                    <Button x:Name="NoButton" Margin="5" Width="75" Content="Cancel" Background="IndianRed" Click="NoButton_Click" />
                             </StackPanel>
                                         
                         </StackPanel>
