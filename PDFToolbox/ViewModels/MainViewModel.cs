@@ -27,6 +27,12 @@ namespace PDFToolbox.ViewModels
         {
             get { return _saveDoc; }
         }
+
+        private ICommand _saveAllDocs = null;
+        public ICommand SaveAllDocs
+        {
+            get { return _saveAllDocs; }
+        }
         private ICommand _rotPageCW90 = null;
         public ICommand RotPageCW90
         {
@@ -249,6 +255,7 @@ namespace PDFToolbox.ViewModels
             // General
             _addDoc = new Common.Commands.DelegateCommand(OnAddDoc);
             _saveDoc = new Common.Commands.DelegateCommand(OnSaveDoc);
+            _saveAllDocs = new Common.Commands.DelegateCommand(OnSaveAllDocs);
             _rotPageCW90 = new Common.Commands.DelegateCommand(OnRotatePageCW90);
             _rotPageCCW90 = new Common.Commands.DelegateCommand(OnRotatePageCCW90);
             _splitDoc = new Common.Commands.DelegateCommand(OnSplitDoc);
@@ -284,6 +291,19 @@ namespace PDFToolbox.ViewModels
             //SelectedDocument.Save();
         }
 
+        private void OnSaveAllDocs(object param)
+        {
+            if (Documents.Count==0)
+                return;
+
+            for (int i = 0; i < Documents.Count; i++)
+            {
+                IO.FileIO.SaveDocument(Documents[i]);
+            }
+            //IO.FileIO.SaveDocument(SelectedDocument);
+            //SelectedDocument.Save();
+        }
+
         private void OnRotatePageCW90(object param)
         {
             RotatePage(SelectedPage, 90f);
@@ -295,7 +315,9 @@ namespace PDFToolbox.ViewModels
 
         private void OnSplitDoc(object param)
         {
-            SplitDocument(SelectedDocument, 3);
+            //string value = Interaction.Inputbox
+            //SplitDocument(SelectedDocument, 3);
+            
         }
 
 
@@ -490,10 +512,12 @@ namespace PDFToolbox.ViewModels
                     newDoc = new Models.Document();
 
                     newDoc.fName = docVM.DocName;
-                    newDoc.Rename("-" + (++docCount), true);
+                    //newDoc.Rename("-" + (++docCount), true);
+                    newDoc.Rename("." + (++docCount) + "-" + (newDoc.id), true);
                     newDoc.image = docVM.Pages[0].Image;
 
                     newDocVM = new DocumentViewModel(newDoc);
+                    //RenameDoc(newDocVM, docVM.DocName, true);
                     Documents.Add(newDocVM);
                     //docCount++;
                 }
@@ -516,6 +540,43 @@ namespace PDFToolbox.ViewModels
                     data.GetDataPresent(typeof(PageViewModel)) ||
                     IO.FileIO.IsExtensionSupported(files)
                 ));
+        }
+
+        private void RenameDoc(DocumentViewModel docVM, string newDocName, bool isNewSubDoc=false)
+        {
+            if (docVM == null)
+                throw new ArgumentNullException("docVM");
+            if (String.IsNullOrEmpty(newDocName))
+                throw new ArgumentNullException("newDocName");
+
+            if (isNewSubDoc)
+            {
+                //int subDocID = 1;
+                bool isSubIDNew = false;
+                string docName;
+                string path;
+                string ext;
+
+                for (int subDocID = 1; !isSubIDNew; subDocID++)
+                {
+                    for (int i = 0; i < Documents.Count; i++)
+                    {
+                        docName = Path.GetFileNameWithoutExtension(Documents[i].DocName);
+                        if (!docName.EndsWith("-" + subDocID.ToString()))
+                        {
+                            path = Path.GetDirectoryName(newDocName) + "\\";
+                            ext = Path.GetExtension(newDocName);
+
+                            newDocName = path + docName + "-" + subDocID.ToString() + ext;
+                            isSubIDNew = true;
+                            //newDocName = "-" + subDocID.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            docVM.DocName = newDocName;
         }
         
         #endregion

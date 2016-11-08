@@ -39,9 +39,10 @@
                     <StackPanel Grid.Row="0" DockPanel.Dock="Left" Orientation="Horizontal">
                         <Button Content="Add Doc"  Command="{Binding AddDoc}" Padding="10,2" Margin="2"/>
                         <Button Content="Save" Command="{Binding SaveDoc}" Padding="20,2" Margin="2"/>
+                        <Button Content="Save All" Command="{Binding SaveAllDocs}" Padding="20,2" Margin="2"/>
                         <Button Content="CCW" Command="{Binding RotPageCCW90}" Padding="10,2" Margin="2"/>
                         <Button Content="CW" Command="{Binding RotPageCW90}" Padding="10,2" Margin="2"/>
-                        <Button Content="Split..." Command="{Binding SplitDoc}" Padding="10,2" Margin="2"/>
+                        <Button Content="Split..." Click="SplitButton_Click" Padding="10,2" Margin="2" x:Name="SplitButton"/>
                     </StackPanel>
                     <StackPanel Grid.Row="0" DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="Clear All" Command="{Binding ClearDocs}" Padding="10,2" Margin="2" />
@@ -72,7 +73,7 @@
                         </Canvas>
                     </Border>
                 </Popup>
-        
+
                 <Grid x:Name="grdViewers" Margin="5,5,5,5" Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150" MinWidth="100"/>
@@ -97,7 +98,7 @@
                              AllowDrop="True" Drop="lbxPages_Drop" DragEnter="lbxPages_DragEnter"
                              PreviewMouseLeftButtonDown="lbxPages_PreviewMouseLeftButtonDown" PreviewMouseMove="lbxPages_PreviewMouseMove">
                         <ListBox.Resources>
-                            
+
                             <!--DataTemplate DataType="{x:Type localVMs:PageViewModel}">
                                 <localViews:PageView PdfPage="{Binding RelativeSource={RelativeSource AncestorType={x:Type localVMs:PageViewModel}}}" />
                             </-->
@@ -129,6 +130,31 @@
                         </ListBox.ItemContainerStyle-->
                     </ListBox>
                 </Grid>
+                <Popup x:Name="InputBox" IsOpen="False" Visibility="Collapsed" PlacementTarget="{Binding ElementName=SplitButton}" Placement="Center" >
+                <Grid x:Name="InputBoxGrid" Visibility="Visible">
+                    <Grid Background="AliceBlue" Opacity="0.5"/>
+                    <Border
+                        MinWidth="250"
+                        Background="DeepSkyBlue"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        CornerRadius="5"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Margin="5" Text="Input:" FontWeight="Bold"/>
+                            <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox" PreviewTextInput="InputTextBox_PreviewTextInput"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button x:Name="YesButton" Margin="5" Content="Accept" Background="LightSeaGreen" Click="YesButton_Click"/>
+                                <Button x:Name="NoButton" Margin="5" Content="Cancel" Background="Firebrick" Click="NoButton_Click" />
+                            </StackPanel>
+                                        
+                        </StackPanel>
+                    </Border>
+                        
+
+                </Grid>
+                </Popup>
             </Grid>
         </TabItem>
         <TabItem x:Name="PageEdit" Header="Edit Page">
