@@ -20,6 +20,25 @@ namespace PDFToolbox.Models
         public Document()
         {
             pages = new List<ViewModels.PageViewModel>();
+            fName = "";
+        }
+
+        public void Rename(string newName, bool append=false)
+        {
+            try
+            {
+                //FileInfo info = new FileInfo(fName);
+
+                newName = (append) ? Path.GetFileNameWithoutExtension(fName) + newName : newName;
+
+                //fName = info.DirectoryName + newName + info.Extension;
+                fName = Path.GetDirectoryName(fName) + "\\" + newName + Path.GetExtension(fName);
+            }
+            catch
+            {
+                // may be a bad idea...
+                fName = newName;
+            }
         }
 
         /*public bool LoadFile(string fPath)

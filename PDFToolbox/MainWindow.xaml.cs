@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Globalization;
 using System.Windows;
@@ -366,6 +367,47 @@ namespace PDFToolbox
                 }
                 //this.AddTextToggleButton.IsChecked = false;
             }
+        }
+
+        private void SplitButton_Click(object sender, RoutedEventArgs e)
+        {
+            InputBox.Visibility = Visibility.Visible;
+            InputBox.IsOpen = true;
+
+            InputTextBox.Focus();
+        }
+
+        private void YesButton_Click(object sender, RoutedEventArgs e)
+        {
+            string text = InputTextBox.Text;
+            //Helpers.D.Log("InputTextBox_IsTextAllowed(text):" + InputTextBox_IsTextAllowed(text));
+            if (InputTextBox_IsTextAllowed(text))
+            {
+                _viewModel.SplitDocument(_viewModel.SelectedDocument, int.Parse(text));
+                //Helpers.D.Log("I'm splitting!");
+                InputBox.Visibility = Visibility.Collapsed;
+                InputBox.IsOpen = false;
+
+                InputTextBox.Text = String.Empty;
+            }
+
+        }
+
+        private void NoButton_Click(object sender, RoutedEventArgs e)
+        {
+            InputBox.Visibility = Visibility.Collapsed;
+            InputBox.IsOpen = false;
+            InputTextBox.Text = String.Empty;
+        }
+
+        private void InputTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !InputTextBox_IsTextAllowed(e.Text); // InputTextBox_IsTextAllowed(e.Text);
+        }
+
+        private bool InputTextBox_IsTextAllowed(string text)
+        {
+            return Regex.IsMatch(text, "[0-9]");
         }
     }
 }

@@ -20,7 +20,7 @@ namespace PDFToolbox
         #region Helper Reference Classes
         public static class Info
         {
-            public static readonly string APP_VERSION = "a0.6.2";
+            public static readonly string APP_VERSION = "a0.6.4";
             public static readonly string APP_CAPTION = "PDF Toolbox - " + Info.APP_VERSION;
 
         }
