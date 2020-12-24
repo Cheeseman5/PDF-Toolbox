@@ -1,3 +1,6 @@
+## ( DEPRECIATED - This project is now being rewritten and maintained [ here ](https://github.com/Cheeseman5/PdfToolbox). )
+
+
 An opensource solution for easy and intuitive PDF manipulation.
 Written for Windows desktop using the WPF framework.
 
