@@ -1,8 +1,9 @@
 ﻿using PDFToolbox.Interfaces;
+using System;
 
 namespace PDFToolbox.Helpers
 {
-    public class Logger : ILogger
+    public class ConsoleLogger : ILogger
     {
         public enum eDebuggerDetail
         {
@@ -22,7 +23,7 @@ namespace PDFToolbox.Helpers
         private const string WARN_PREFIX = "WARNING: ";
         private const string ERR_PREFIX = "ERROR! ";
 
-        public Logger(eDebuggerDetail loggingDetail)
+        public ConsoleLogger(eDebuggerDetail loggingDetail)
         {
             detail = loggingDetail;
         }
