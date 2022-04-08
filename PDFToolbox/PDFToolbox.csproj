@@ -57,8 +57,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
+    <StartupObject>PDFToolbox.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>943FF2CE97493FAC4969806AACE7E61F398EA8EE</ManifestCertificateThumbprint>
@@ -283,6 +282,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Helpers\Helpers.csproj">
+      <Project>{fd5da570-1a40-4211-9844-732fc554f0a8}</Project>
+      <Name>Helpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{a32410bc-b5bf-4e59-a970-e3734736b70b}</Project>
       <Name>Interfaces</Name>
