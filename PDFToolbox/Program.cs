@@ -9,13 +9,14 @@ namespace PDFToolbox
 {
     public class Program
     {
-        private const bool USE_REFACTORED = false;
+        private const bool USE_REFACTORED_CODE = false;
         private static void GenerateDependencied()
         {
             Window wnd;
-            if (!USE_REFACTORED)
+            if (!USE_REFACTORED_CODE)
             {
                 wnd = new MainWindow();
+                wnd.Show();
                 return;
             }
 
@@ -34,7 +35,8 @@ namespace PDFToolbox
             fileIO.RegisterStrategy(pdfFileIO);
 
             wnd = new MainWindow(toolbox, fileIO);
-            
+            wnd.Show();
+
         }
 
         [STAThreadAttribute]
