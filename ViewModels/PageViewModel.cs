@@ -3,12 +3,14 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Media.Imaging;
 using System.IO;
+using Factories;
 
 namespace PDFToolbox.ViewModels
 {
     public class PageViewModel : ViewModelBase
     {
         private Models.Page _page = null;
+        private PageFactory _pageFactory;
 
         private double _scale;
         public double Scale
@@ -32,13 +34,16 @@ namespace PDFToolbox.ViewModels
             }
         }
 
-        public PageViewModel(Models.Page page)
+        public PageViewModel(Models.Page page, PageFactory pageFactory)
         {
             SetPage(page);
+
+            _pageFactory = pageFactory;
         }
 
-        public PageViewModel()
+        public PageViewModel(PageFactory pageFactory)
         {
+            _pageFactory = pageFactory;
         }
         public void SetPage(Models.Page page)
         {
@@ -51,11 +56,13 @@ namespace PDFToolbox.ViewModels
 
         public void Copy(PageViewModel page)
         {
-            this._page.Copy(page._page);
+            _pageFactory.CopyPage(page._page);
         }
+
+        //TODO: fix this.  This should probably be pulled out into another class instead of being static.
         public static PageViewModel MakeCopy(PageViewModel page)
         {
-            PageViewModel p = new PageViewModel(new Models.Page());
+            var p = new PageViewModel(new Models.Page(), new PageFactory());
 
             p.Copy(page);
 
@@ -97,7 +104,7 @@ namespace PDFToolbox.ViewModels
             get { return _page.rotation.FloatValue; }
             set
             {
-                _page.SetRotation(value);
+                _page.rotation = new iTextSharp.text.pdf.PdfNumber(value);
                 OnPropertyChanged("Rotation");
             }
         }
@@ -130,7 +137,7 @@ namespace PDFToolbox.ViewModels
         
         public int ID
         {
-            get { return _page.id; }
+            get { return _page.ID; }
         }
 
         public void OnStringsChanged(object sender, NotifyCollectionChangedEventArgs e)

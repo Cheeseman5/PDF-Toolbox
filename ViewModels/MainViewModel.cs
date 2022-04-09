@@ -4,9 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-//using System.Windows.Controls;
 using System.IO;
-
+using Factories;
 
 namespace PDFToolbox.ViewModels
 {
@@ -232,38 +231,17 @@ namespace PDFToolbox.ViewModels
         #endregion
 
         public readonly string[] SUPPORTED_FILE_TYPES = { ".PDF" };
+        private PageFactory _pageFactory;
 
-        public MainViewModel()
+        public MainViewModel(PageFactory pageFactory)
         {
-            //----[ Events ]----------------------------------------------------------------
-            // General
-            //_addDoc = new Common.Commands.DelegateCommand(OnAddDoc);
-            //_saveDoc = new Common.Commands.DelegateCommand(OnSaveDoc);
-            //_saveAllDocs = new Common.Commands.DelegateCommand(OnSaveAllDocs);
-            //_rotPageCW90 = new Common.Commands.DelegateCommand(OnRotatePageCW90);
-            //_rotPageCCW90 = new Common.Commands.DelegateCommand(OnRotatePageCCW90);
-            //_splitDoc = new Common.Commands.DelegateCommand(OnSplitDoc);
-
-            //_clearDocs = new Common.Commands.DelegateCommand(OnClearDocs);
-            //_removePage = new Common.Commands.DelegateCommand(OnRemovePage);
-            //_removeDoc = new Common.Commands.DelegateCommand(OnRemoveDoc);
-
-            //// Canvas
-            //_clearCanvas = new Common.Commands.DelegateCommand(OnClearCanvas);
-            //_leftMouseUpCanvas = new Common.Commands.DelegateCommand(OnLeftMouseUpCanvas);
-
-            //// Key binding events
-            //_keyDeletePressed = new Common.Commands.DelegateCommand(OnKeyDeletePressed);
-
+            _pageFactory = pageFactory;
         }
 
         #region Event implimentations
         private void OnAddDoc(object param)
         {
-            AddNewDoc(new Models.Document()
-            {
-                fName = String.Format("Doc{0}", _docs.Count)
-            });
+            AddNewDoc(_pageFactory.CreateDocument($"Doc{_docs.Count}"));
         }
 
         private void OnSaveDoc(object param)
@@ -362,7 +340,7 @@ namespace PDFToolbox.ViewModels
         {
             int nextIndex = (SelectedPage != null ? Pages.IndexOf(SelectedPage) : -1) + 1;
 
-            PageViewModel pageVM = new PageViewModel(page);
+            PageViewModel pageVM = new PageViewModel(page, _pageFactory);
             SelectedDocument.Pages.Insert(nextIndex, pageVM);
             SelectedPage = pageVM;
 
@@ -392,11 +370,6 @@ namespace PDFToolbox.ViewModels
                 {
                     Documents.Add(new DocumentViewModel(doc));
                     SelectedDocument = Documents[Documents.Count-1];
-                }
-                else
-                {
-                    //for (int p = 0; p < doc.pages.Count; p++)
-                    //    SelectedDocument.Pages.Add(doc.pages[p]);
                 }
             }
         }
@@ -464,10 +437,10 @@ namespace PDFToolbox.ViewModels
                 // current doc VM reached its goal page-count - start the next one...
                 if (newDocVM.PageCount >= splitInterval)
                 {
-                    newDoc = new Models.Document();
+                    newDoc = _pageFactory.CreateDocument();
 
                     newDoc.fName = docVM.DocName;
-                    newDoc.Rename("." + (++docCount) + "-" + (newDoc.id), true);
+                    //newDoc.Rename("." + (++docCount) + "-" + (newDoc.id), true);
                     newDoc.image = docVM.Pages[0].Image;
 
                     newDocVM = new DocumentViewModel(newDoc);

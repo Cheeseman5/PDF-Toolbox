@@ -1,4 +1,5 @@
-﻿using PDFToolbox.Helpers;
+﻿using Factories;
+using PDFToolbox.Helpers;
 using PDFToolbox.Interfaces;
 using PDFToolbox.IO;
 using System;
@@ -20,9 +21,10 @@ namespace PDFToolbox
                 return;
             }
 
-            Helpers.Toolbox toolbox = new Helpers.Toolbox();
+            var toolbox = new Helpers.Toolbox();
+            var pageFactory = new PageFactory();
             ILogger logger = new ConsoleLogger(ConsoleLogger.eDebuggerDetail.Log);
-            Helpers.FileIO fileIO = new Helpers.FileIO(toolbox, logger);
+            var fileIO = new Helpers.FileIO(toolbox, logger);
 
             Helpers.BaseFileIOExtractor outlookExtractor = new Helpers.OutlookAttachmentExtractor(fileIO);
             Helpers.BaseFileIOExtractor fileDropExtractor = new Helpers.FileDropExtractor();

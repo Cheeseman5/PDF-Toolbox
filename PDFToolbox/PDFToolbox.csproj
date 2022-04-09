@@ -282,6 +282,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Factories\Factories.csproj">
+      <Project>{CC2787B9-B650-4527-835E-C886B509AACA}</Project>
+      <Name>Factories</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Helpers\Helpers.csproj">
       <Project>{fd5da570-1a40-4211-9844-732fc554f0a8}</Project>
       <Name>Helpers</Name>
