@@ -82,7 +82,7 @@ namespace PDFToolbox.ViewModels
             {
                 if (!_isInDesignMode.HasValue)
                 {
-                    _isInDesignMode = DesignerProperties.GetIsInDesignMode(new DependencyObject());
+                    //_isInDesignMode = DesignerProperties.GetIsInDesignMode(new DependencyObject());
                 }
 
                 return _isInDesignMode.Value;

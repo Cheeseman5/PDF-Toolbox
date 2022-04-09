@@ -1,21 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 //using PdfSharp.Pdf;
 using PDFToolbox.IO;
@@ -31,12 +20,13 @@ namespace PDFToolbox
         private Helpers.DragDropHandler.Data _docsDropData = new Helpers.DragDropHandler.Data();
         private Helpers.DragDropHandler.Data _pagesDropData = new Helpers.DragDropHandler.Data();
         private Adorners.PageViewFileDropAdorner _pageViewAdornerLayer;
-        
+
+        private Helpers.Toolbox _toolbox;
+        private Helpers.FileIO _fileIO;
+
         public MainWindow()
         {
             InitializeComponent();
-
-
 
             Title = Toolbox.Info.APP_CAPTION;
 
@@ -53,7 +43,23 @@ namespace PDFToolbox
             FileIO.RegisterStrategy(new FileDropExtractor());
             // Register normal 
             FileIO.RegisterStrategy(new PdfFileIO());
-            //FileIO.RegisterStrategy(new ImagesFileIO());
+        }
+
+        public MainWindow(Helpers.Toolbox toolbox, Helpers.FileIO fileIO)
+        {
+            InitializeComponent();
+            _toolbox = toolbox;
+            _fileIO = fileIO;
+
+            Title = _toolbox.info.APP_CAPTION;
+
+            _toolbox.MainWindow = this;
+
+            _pageViewAdornerLayer = new Adorners.PageViewFileDropAdorner(lbxPages);
+            _viewModel = (ViewModels.MainViewModel)this.DataContext;
+            _toolbox.WireSelectNameOnFocus(tbxDocumentName);
+
+            _toolbox.CreateLocalSaveDir();
 
         }
 
