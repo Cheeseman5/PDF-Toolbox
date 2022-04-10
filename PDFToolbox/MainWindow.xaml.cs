@@ -306,32 +306,6 @@ namespace PDFToolbox
             IO.FileIO.Cleanup();
         }
 
-        
-        /*
-        private void PageEdit_GotFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void AddTextToggleButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.PageEditCanvas != null)
-            {
-                TextBlock txt;
-
-                txt = new TextBlock();
-                txt.Foreground = new SolidColorBrush(Colors.Black);
-                txt.Text = "Testing...";
-                Canvas.SetTop(txt, 100);
-                Canvas.SetRight(txt, 50);
-                PageEditCanvas.Children.Add(txt);
-
-                //this.AddTextToggleButton.IsChecked = false;
-            }
-
-            this.AddTextToggleButton.IsChecked = !this.AddTextToggleButton.IsChecked;
-        }*/
-
         private void PageEditCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Point mouse;
