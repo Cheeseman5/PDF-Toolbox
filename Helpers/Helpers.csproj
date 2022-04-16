@@ -7,7 +7,7 @@
     <ProjectGuid>{FD5DA570-1A40-4211-9844-732FC554F0A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Helpers</RootNamespace>
+    <RootNamespace>PDFToolbox.Helpers</RootNamespace>
     <AssemblyName>Helpers</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

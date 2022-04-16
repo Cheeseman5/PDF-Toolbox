@@ -294,6 +294,14 @@
       <Project>{a32410bc-b5bf-4e59-a970-e3734736b70b}</Project>
       <Name>Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Managers\Managers.csproj">
+      <Project>{66D3F99F-C0D4-450E-9CB7-A396A325F250}</Project>
+      <Name>Managers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ViewModels\ViewModels.csproj">
+      <Project>{6954BA0C-2846-4E50-B47B-D755056CD819}</Project>
+      <Name>ViewModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

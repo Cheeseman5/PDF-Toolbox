@@ -7,7 +7,7 @@
     <ProjectGuid>{CC2787B9-B650-4527-835E-C886B509AACA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Factories</RootNamespace>
+    <RootNamespace>PDFToolbox.Factories</RootNamespace>
     <AssemblyName>Factories</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

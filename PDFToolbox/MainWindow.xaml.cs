@@ -8,6 +8,7 @@ using System.Windows.Media;
 
 //using PdfSharp.Pdf;
 using PDFToolbox.IO;
+using PDFToolbox.Interfaces.Managers;
 
 namespace PDFToolbox
 {
@@ -23,6 +24,7 @@ namespace PDFToolbox
 
         private Helpers.Toolbox _toolbox;
         private Helpers.FileIO _fileIO;
+        private IToolboxManager _toolboxManager;
 
         public MainWindow()
         {
@@ -45,7 +47,7 @@ namespace PDFToolbox
             FileIO.RegisterStrategy(new PdfFileIO());
         }
 
-        public MainWindow(Helpers.Toolbox toolbox, Helpers.FileIO fileIO)
+        public MainWindow(Helpers.Toolbox toolbox, Helpers.FileIO fileIO, IToolboxManager toolboxManager)
         {
             InitializeComponent();
             _toolbox = toolbox;
@@ -60,38 +62,22 @@ namespace PDFToolbox
             _toolbox.WireSelectNameOnFocus(tbxDocumentName);
 
             _toolbox.CreateLocalSaveDir();
-
+            _toolboxManager = toolboxManager;
         }
 
         private void lbxPages_Drop(object sender, DragEventArgs e)
         {
             RemoveAdorner();
-            
-            HitTestResult hit = VisualTreeHelper.HitTest(sender as ListBox, e.GetPosition(sender as ListBox));
 
+            HitTestResult hit = VisualTreeHelper.HitTest(sender as ListBox, e.GetPosition(sender as ListBox));
+            
             // DraggedItem is a pageDict -> rearrange
             if (e.Data.GetDataPresent(typeof(ViewModels.PageViewModel)))
             {
-
                 ViewModels.PageViewModel draggedPage = e.Data.GetData(typeof(ViewModels.PageViewModel)) as ViewModels.PageViewModel;
-                ListBoxItem lbxItemDropTarget = Toolbox.FindParent<ListBoxItem>(hit.VisualHit);
-                ViewModels.PageViewModel targetPage;
+                ListBoxItem lbxItemDropTarget = _toolbox.FindParent<ListBoxItem>(hit.VisualHit);
 
-                // Move pageDict to last element if dropped on blank-space
-                if (lbxItemDropTarget == null)
-                {
-                    _viewModel.MovePage(
-                        _viewModel.SelectedDocument.GetPageIndex(draggedPage),
-                        _viewModel.Pages.Count - 1);
-                }
-                else
-                {
-                    targetPage = lbxItemDropTarget.DataContext as ViewModels.PageViewModel;
-                    _viewModel.MovePage(
-                        _viewModel.SelectedDocument.GetPageIndex(draggedPage),
-                        _viewModel.SelectedDocument.GetPageIndex(targetPage));
-                }
-                return;
+                _toolboxManager.DropOnPage(lbxItemDropTarget, draggedPage, _viewModel);
             }
 
             // Get any files dropped onto pageview

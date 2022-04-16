@@ -1,7 +1,9 @@
 ﻿using Factories;
 using PDFToolbox.Helpers;
 using PDFToolbox.Interfaces;
+using PDFToolbox.Interfaces.Managers;
 using PDFToolbox.IO;
+using PDFToolbox.Managers;
 using System;
 using System.Reflection;
 using System.Windows;
@@ -22,6 +24,7 @@ namespace PDFToolbox
             }
 
             var toolbox = new Helpers.Toolbox();
+            IToolboxManager toolboxManager = new ToolboxManager(toolbox);
             var pageFactory = new PageFactory();
             ILogger logger = new ConsoleLogger(ConsoleLogger.eDebuggerDetail.Log);
             var fileIO = new Helpers.FileIO(toolbox, logger);
@@ -36,7 +39,7 @@ namespace PDFToolbox
             // Register normal 
             fileIO.RegisterStrategy(pdfFileIO);
 
-            wnd = new MainWindow(toolbox, fileIO);
+            wnd = new MainWindow(toolbox, fileIO, toolboxManager);
             wnd.Show();
 
         }

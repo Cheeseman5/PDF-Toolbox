@@ -9,7 +9,7 @@ using Factories;
 
 namespace PDFToolbox.ViewModels
 {
-    class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase
     {
         #region Event declarations
         private ICommand _addDoc = null;
