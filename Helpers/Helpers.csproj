@@ -65,6 +65,10 @@
     <Compile Include="Toolbox.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Factories\Factories.csproj">
+      <Project>{CC2787B9-B650-4527-835E-C886B509AACA}</Project>
+      <Name>Factories</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{a32410bc-b5bf-4e59-a970-e3734736b70b}</Project>
       <Name>Interfaces</Name>

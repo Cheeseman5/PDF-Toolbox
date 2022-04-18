@@ -9,19 +9,15 @@ namespace PDFToolbox.Models
     public class Page
     {
         // image used to display in pageDict/document views
-        public BitmapImage image { get; set; }
-        public string fName { get; set; }
-        // Original page number
-        public int number { get; set; }
-        public PdfNumber rotation { get; set; } = new PdfNumber(0f);
-        // Original rotation of pageDict (in degrees)
-        public PdfNumber originalRotation { get; set; } = new PdfNumber(0f);
+        public BitmapImage Image;
+        public string FileName;
+        public int OriginalPageNumber;
+        public PdfNumber Rotation;
+        public PdfNumber OriginalRotation;
         // True = image is ignored on PDF creation; False = image is used
-        public bool isImagePreview { get; set; }
-
-        public Stream imageStream { get; set; }
-
-        public ObservableCollection<UIString> uiStrings { get; set; }
-        public int ID { get; set; }
+        public bool IsImagePreview;
+        public Stream ImageStream;
+        public ObservableCollection<UIString> UIStrings;
+        public int ID;
     }
 }
