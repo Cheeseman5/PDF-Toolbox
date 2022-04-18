@@ -50,8 +50,8 @@ namespace PDFToolbox.ViewModels
             if (page == null)
                 throw new ArgumentNullException("pageDict");
             _page = page;
-            _page.uiStrings = new ObservableCollection<Models.UIString>();
-            _page.uiStrings.CollectionChanged += OnStringsChanged;
+            _page.UIStrings = new ObservableCollection<Models.UIString>();
+            _page.UIStrings.CollectionChanged += OnStringsChanged;
         }
 
         public void Copy(PageViewModel page)
@@ -71,40 +71,40 @@ namespace PDFToolbox.ViewModels
 
         public BitmapImage Image
         {
-            get { return _page.image; }
+            get { return _page.Image; }
             set
             {
-                _page.image = value;
+                _page.Image = value;
                 OnPropertyChanged("Image");
             }
         }
 
         public string DocName
         {
-            get { return _page.fName; }
+            get { return _page.FileName; }
             set
             {
-                _page.fName = value;
+                _page.FileName = value;
                 OnPropertyChanged("DocName");
             }
         }
 
         public int Number
         {
-            get { return _page.number; }
+            get { return _page.OriginalPageNumber; }
             set
             {
-                _page.number = value;
+                _page.OriginalPageNumber = value;
                 OnPropertyChanged("Number");
             }
         }
 
         public float Rotation
         {
-            get { return _page.rotation.FloatValue; }
+            get { return _page.Rotation.FloatValue; }
             set
             {
-                _page.rotation = new iTextSharp.text.pdf.PdfNumber(value);
+                _page.Rotation = new iTextSharp.text.pdf.PdfNumber(value);
                 OnPropertyChanged("Rotation");
             }
         }
@@ -112,25 +112,25 @@ namespace PDFToolbox.ViewModels
         // FIXME: find a better way to handle 2 rotations. Maybe find a way to reduce it down to 1 again...
         public float FlatRotation
         {
-            get { return _page.rotation.FloatValue + _page.originalRotation.FloatValue; }
+            get { return _page.Rotation.FloatValue + _page.OriginalRotation.FloatValue; }
         }
 
         public Stream ImageStream
         {
-            get { return _page.imageStream; }
+            get { return _page.ImageStream; }
             set
             {
-                _page.imageStream = value;
+                _page.ImageStream = value;
                 OnPropertyChanged("ImageStream");
             }
         }
 
         public ObservableCollection<Models.UIString> Strings
         {
-            get { return _page.uiStrings; }
+            get { return _page.UIStrings; }
             private set
             {
-                _page.uiStrings = value;
+                _page.UIStrings = value;
                 OnPropertyChanged("Strings");
             }
         }

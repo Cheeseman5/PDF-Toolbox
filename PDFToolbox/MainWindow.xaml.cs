@@ -95,7 +95,7 @@ namespace PDFToolbox
             }
 
             // Get any files dropped onto pageview
-            Models.Document[] dropFiles = FileIO.ExtractDocument(e.Data);
+            Models.Document[] dropFiles = _fileIO.ExtractDocument(e.Data);
 
             // If any files dropped, load their pages
             if (dropFiles != null && dropFiles.Length > 0)
