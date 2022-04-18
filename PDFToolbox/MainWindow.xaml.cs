@@ -337,7 +337,7 @@ namespace PDFToolbox
             Point mouse;
             Point canvasOrigin;
             Canvas canvas;
-            Common.UIString str;
+            Models.UIString str;
             TextBlock txt;
             FormattedText frmt;
 
@@ -351,7 +351,7 @@ namespace PDFToolbox
                                             (this.PageEditItemsControl.ActualHeight / 2) - (canvas.Height / 2));
                     
                     txt = new TextBlock();
-                    str = new Common.UIString();
+                    str = new Models.UIString();
 
                     str.String = this.AddTextTextBox.Text;
 

@@ -49,15 +49,15 @@ namespace PDFToolbox.IO
             for (int i = 0; i < reader.NumberOfPages; i++)
             {
                 page = CachePdfPageFromFile(info, reader, i);
-                page.image = pageImages[i];
+                page.Image = pageImages[i];
                 
-                doc.pages.Add(new ViewModels.PageViewModel(page));
+                doc.Pages.Add(page);
             }
 
-            if (doc.pages.Count > 0)
+            if (doc.Pages.Count > 0)
             {
-                doc.image = doc.pages[0].Image;
-                doc.fName = doc.pages[0].DocName;
+                doc.Image = doc.Pages[0].Image;
+                doc.FileName = doc.Pages[0].FileName;
             }
 
             return doc;
@@ -107,7 +107,7 @@ namespace PDFToolbox.IO
                         pageStamp = targetPdf.CreatePageStamp(importedPage);
 
                         //add any strings
-                        foreach(Common.UIString str in vm.Strings)
+                        foreach(Models.UIString str in vm.Strings)
                         {
                             ColumnText.ShowTextAligned(pageStamp.GetOverContent(),
                                 iTextSharp.text.Element.ALIGN_LEFT,
@@ -164,11 +164,11 @@ namespace PDFToolbox.IO
         private Models.Page CachePdfPageFromFile(FileIOInfo info, PdfReader reader, int pageNum)
         {
             Models.Page page = new Models.Page();
-            page.number = ++pageNum;
-            page.fName = (info.IsTempPath ? info.FileName : info.FullFileName);
+            page.OriginalPageNumber = ++pageNum;
+            page.FileName = (info.IsTempPath ? info.FileName : info.FullFileName);
             //FIXME: this is making the pages render with wrong rotation unless rotation is zero
             //page.SetRotation((float)reader.GetPageRotation(pageNum));
-            page.originalRotation = new PdfNumber(reader.GetPageRotation(pageNum));
+            page.OriginalRotation = new PdfNumber(reader.GetPageRotation(pageNum));
 
             return page;
         }

@@ -29,12 +29,12 @@ namespace PDFToolbox.IO
             {
                 page = new Models.Page();
 
-                page.fName = info.FullFileName;
-                page.image = TiffFrameToBitmapImage(tiff.Frames[i]);
-                page.number = i+1;
-                page.imageStream = (MemoryStream)page.image.StreamSource;
+                page.FileName = info.FullFileName;
+                page.Image = TiffFrameToBitmapImage(tiff.Frames[i]);
+                page.OriginalPageNumber = i+1;
+                page.ImageStream = (MemoryStream)page.Image.StreamSource;
 
-                doc.pages.Add(new ViewModels.PageViewModel(page));
+                doc.Pages.Add(page);
             }
 
 

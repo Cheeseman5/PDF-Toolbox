@@ -22,27 +22,28 @@ namespace PDFToolbox.ViewModels
                 throw new ArgumentNullException("document");
             _doc = document;
 
-            Pages = new ObservableCollection<PageViewModel>(_doc.pages);
+            //Pages = new ObservableCollection<PageViewModel>(_doc.Pages);
+            Pages = new ObservableCollection<ViewModels.PageViewModel>();
             Pages.CollectionChanged += OnPagesChanged;
         }
 
         #region Properties
         public BitmapImage Image
         {
-            get { return _doc.image; }
+            get { return _doc.Image; }
             set
             {
-                _doc.image = value;
+                _doc.Image = value;
                 OnPropertyChanged("Image");
             }
         }
 
         public string DocName
         {
-            get { return _doc.fName; }
+            get { return _doc.FileName; }
             set
             {
-                _doc.fName = value;
+                _doc.FileName = value;
                 OnPropertyChanged("DocName");
             }
         }
