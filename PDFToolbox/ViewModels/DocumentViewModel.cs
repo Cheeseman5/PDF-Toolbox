@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Media.Imaging;
-using System.Drawing;
-using System.Threading.Tasks;
 
 namespace PDFToolbox.ViewModels
 {
@@ -53,15 +48,6 @@ namespace PDFToolbox.ViewModels
             get { return Pages.Count; }
         }
 
-        public float Rotation
-        {
-            get { return (Pages != null && Pages.Count > 0 ? Pages[0].Rotation : 0f); }
-            /*set
-            {
-                
-                OnPropertyChanged("Rotation");
-            }*/
-        }
         #endregion
 
         #region Utils
@@ -80,11 +66,6 @@ namespace PDFToolbox.ViewModels
         {
             return Pages.IndexOf(Pages.Where(p => p.ID == page.ID).FirstOrDefault());
         }
-
-        /*public void Save()
-        {
-            Toolbox.SaveDocument(_doc.fName, Pages);
-        }*/
         #endregion
     }
 }
