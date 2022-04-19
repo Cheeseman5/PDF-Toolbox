@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.IO;
-
+using Factories;
 
 namespace PDFToolbox.ViewModels
 {
@@ -248,6 +248,7 @@ namespace PDFToolbox.ViewModels
         #endregion
 
         public readonly string[] SUPPORTED_FILE_TYPES = { ".PDF" };
+        private PageFactory _pageFactory;
 
         public MainViewModel()
         {
@@ -273,12 +274,17 @@ namespace PDFToolbox.ViewModels
 
         }
 
+        public MainViewModel(PageFactory pageFactory)
+        {
+            _pageFactory = pageFactory;
+        }
+
         #region Event implimentations
         private void OnAddDoc(object param)
         {
             AddNewDoc(new Models.Document()
             {
-                fName = String.Format("Doc{0}", _docs.Count)
+                FileName = String.Format("Doc{0}", _docs.Count)
             });
         }
 
@@ -404,7 +410,7 @@ namespace PDFToolbox.ViewModels
         {
             int nextIndex = (SelectedPage != null ? Pages.IndexOf(SelectedPage) : -1) + 1;
 
-            PageViewModel pageVM = new PageViewModel(page);
+            PageViewModel pageVM = new PageViewModel(page, _pageFactory);
             SelectedDocument.Pages.Insert(nextIndex, pageVM);
             SelectedPage = pageVM;
 
@@ -437,8 +443,8 @@ namespace PDFToolbox.ViewModels
                 }
                 else
                 {
-                    for (int p = 0; p < doc.pages.Count; p++)
-                        SelectedDocument.Pages.Add(doc.pages[p]);
+                    for (int p = 0; p < doc.Pages.Count; p++)
+                    { }// SelectedDocument.Pages.Add(doc.Pages[p]);
                 }
             }
         }
@@ -464,7 +470,7 @@ namespace PDFToolbox.ViewModels
 
             foreach (ViewModels.PageViewModel page in source.Pages)
             {
-                target.Pages.Add(PageViewModel.MakeCopy(page));
+                target.Pages.Add(page.MakeCopy(page));
             }
         }
 
@@ -501,9 +507,6 @@ namespace PDFToolbox.ViewModels
 
             newDocVM = docVM;
 
-            //newDoc = new Models.Document();
-            //newDocVM = new DocumentViewModel(newDoc);
-
             while (docVM.PageCount> splitInterval)
             {
                 // current doc VM reached its goal page-count - start the next one...
@@ -511,15 +514,12 @@ namespace PDFToolbox.ViewModels
                 {
                     newDoc = new Models.Document();
 
-                    newDoc.fName = docVM.DocName;
-                    //newDoc.Rename("-" + (++docCount), true);
-                    newDoc.Rename("." + (++docCount) + "-" + (newDoc.id), true);
-                    newDoc.image = docVM.Pages[0].Image;
+                    newDoc.FileName = docVM.DocName;
+                    //newDoc.Rename("." + (++docCount) + "-" + (newDoc.id), true);
+                    newDoc.Image = docVM.Pages[0].Image;
 
                     newDocVM = new DocumentViewModel(newDoc);
-                    //RenameDoc(newDocVM, docVM.DocName, true);
                     Documents.Add(newDocVM);
-                    //docCount++;
                 }
                 else
                 {

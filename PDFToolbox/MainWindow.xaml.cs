@@ -95,7 +95,7 @@ namespace PDFToolbox
             }
 
             // Get any files dropped onto pageview
-            Models.Document[] dropFiles = FileIO.ExtractDocument(e.Data);
+            Models.Document[] dropFiles = _fileIO.ExtractDocument(e.Data);
 
             // If any files dropped, load their pages
             if (dropFiles != null && dropFiles.Length > 0)
@@ -337,7 +337,7 @@ namespace PDFToolbox
             Point mouse;
             Point canvasOrigin;
             Canvas canvas;
-            Common.UIString str;
+            Models.UIString str;
             TextBlock txt;
             FormattedText frmt;
 
@@ -351,7 +351,7 @@ namespace PDFToolbox
                                             (this.PageEditItemsControl.ActualHeight / 2) - (canvas.Height / 2));
                     
                     txt = new TextBlock();
-                    str = new Common.UIString();
+                    str = new Models.UIString();
 
                     str.String = this.AddTextTextBox.Text;
 

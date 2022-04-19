@@ -29,20 +29,20 @@ namespace PDFToolbox.ViewModels
         #region Properties
         public BitmapImage Image
         {
-            get { return _doc.image; }
+            get { return _doc.Image; }
             set
             {
-                _doc.image = value;
+                _doc.Image = value;
                 OnPropertyChanged("Image");
             }
         }
 
         public string DocName
         {
-            get { return _doc.fName; }
+            get { return _doc.FileName; }
             set
             {
-                _doc.fName = value;
+                _doc.FileName = value;
                 OnPropertyChanged("DocName");
             }
         }

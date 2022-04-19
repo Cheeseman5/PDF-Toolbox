@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows;
 
 namespace PDFToolbox.ViewModels
 {
@@ -43,18 +44,18 @@ namespace PDFToolbox.ViewModels
 
             // Verify that the property name matches a real,  
             // public, instance property on this object.
-            if (TypeDescriptor.GetProperties(this)[PropertyName] == null)
-            {
-                string msg = "Invalid property name: " + PropertyName;
+            if (TypeDescriptor.GetProperties(this)[PropertyName] != null)
+                return;
 
-                if (this.ThrowOnInvalidPropertyName)
-                {
-                    throw new Exception(msg);
-                }
-                else
-                {
-                    Debug.Fail(msg);
-                }
+            string msg = "Invalid property name: " + PropertyName;
+
+            if (this.ThrowOnInvalidPropertyName)
+            {
+                throw new Exception(msg);
+            }
+            else
+            {
+                Debug.Fail(msg);
             }
         }
 
@@ -82,7 +83,7 @@ namespace PDFToolbox.ViewModels
             {
                 if (!_isInDesignMode.HasValue)
                 {
-                    //_isInDesignMode = DesignerProperties.GetIsInDesignMode(new DependencyObject());
+                    _isInDesignMode = DesignerProperties.GetIsInDesignMode(new DependencyObject());
                 }
 
                 return _isInDesignMode.Value;
@@ -140,10 +141,6 @@ namespace PDFToolbox.ViewModels
         public virtual void Dispose()
         {
             OnDispose(true);
-
-#if !DEBUG
-			GC.SuppressFinalize(this);
-#endif
         }
 
 #if DEBUG

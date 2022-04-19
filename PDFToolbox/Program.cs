@@ -28,7 +28,7 @@ namespace PDFToolbox
 
             Helpers.BaseFileIOExtractor outlookExtractor = new Helpers.OutlookAttachmentExtractor(fileIO);
             Helpers.BaseFileIOExtractor fileDropExtractor = new Helpers.FileDropExtractor();
-            Helpers.BaseFileIOStrategy pdfFileIO = new Helpers.PdfFileIO(toolbox, fileIO);
+            Helpers.BaseFileIOStrategy pdfFileIO = new Helpers.PdfFileIO(toolbox, fileIO, pageFactory);
 
             // Register Extractors (pre-loaders)
             fileIO.RegisterStrategy(outlookExtractor);

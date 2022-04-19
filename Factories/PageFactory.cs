@@ -25,7 +25,7 @@ namespace Factories
         {
             var document = new Document();
             document.ID = GetNextID();
-            document.fName = fName;
+            document.FileName = fName;
             return document;
         }
         public Page CopyPage(Page page)
@@ -35,14 +35,14 @@ namespace Factories
             var newPage = new Page()
             {
                 ID = GetNextID(),
-                image = page.image,
-                fName = page.fName,
-                number = page.number,
-                rotation = page.rotation,
-                originalRotation = page.originalRotation,
-                isImagePreview = page.isImagePreview,
-                imageStream = page.imageStream,
-                uiStrings = page.uiStrings
+                Image = page.Image,
+                FileName = page.FileName,
+                OriginalPageNumber = page.OriginalPageNumber,
+                Rotation = page.Rotation,
+                OriginalRotation = page.OriginalRotation,
+                IsImagePreview = page.IsImagePreview,
+                ImageStream = page.ImageStream,
+                UIStrings = page.UIStrings
             };
             
             return newPage;
@@ -55,15 +55,15 @@ namespace Factories
             var newDoc = new Document()
             {
                 ID = GetNextID(),
-                fName = document.fName,
-                imageStream = document.imageStream,
-                image = document.image,
-                originalPageNumber = document.originalPageNumber,
-                isImagePreview = document.isImagePreview,
-                uiStrings = document.uiStrings,
-                originalRotation = document.originalRotation,
-                rotation = document.rotation,
-                pages = document.pages
+                FileName = document.FileName,
+                ImageStream = document.ImageStream,
+                Image = document.Image,
+                OriginalPageNumber = document.OriginalPageNumber,
+                IsImagePreview = document.IsImagePreview,
+                UIStrings = document.UIStrings,
+                OriginalRotation = document.OriginalRotation,
+                Rotation = document.Rotation,
+                Pages = document.Pages
             };
 
             return newDoc;

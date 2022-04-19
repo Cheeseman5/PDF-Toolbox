@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Media.Imaging;
-using System.Drawing;
-using System.Threading.Tasks;
 
 namespace PDFToolbox.ViewModels
 {
@@ -22,27 +17,28 @@ namespace PDFToolbox.ViewModels
                 throw new ArgumentNullException("document");
             _doc = document;
 
-            Pages = new ObservableCollection<PageViewModel>(_doc.pages);
+            //Pages = new ObservableCollection<PageViewModel>(_doc.Pages);
+            Pages = new ObservableCollection<ViewModels.PageViewModel>();
             Pages.CollectionChanged += OnPagesChanged;
         }
 
         #region Properties
         public BitmapImage Image
         {
-            get { return _doc.image; }
+            get { return _doc.Image; }
             set
             {
-                _doc.image = value;
+                _doc.Image = value;
                 OnPropertyChanged("Image");
             }
         }
 
         public string DocName
         {
-            get { return _doc.fName; }
+            get { return _doc.FileName; }
             set
             {
-                _doc.fName = value;
+                _doc.FileName = value;
                 OnPropertyChanged("DocName");
             }
         }
@@ -52,15 +48,6 @@ namespace PDFToolbox.ViewModels
             get { return Pages.Count; }
         }
 
-        public float Rotation
-        {
-            get { return (Pages != null && Pages.Count > 0 ? Pages[0].Rotation : 0f); }
-            /*set
-            {
-                
-                OnPropertyChanged("Rotation");
-            }*/
-        }
         #endregion
 
         #region Utils
@@ -79,11 +66,6 @@ namespace PDFToolbox.ViewModels
         {
             return Pages.IndexOf(Pages.Where(p => p.ID == page.ID).FirstOrDefault());
         }
-
-        /*public void Save()
-        {
-            Toolbox.SaveDocument(_doc.fName, Pages);
-        }*/
         #endregion
     }
 }

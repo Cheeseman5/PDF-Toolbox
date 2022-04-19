@@ -7,14 +7,17 @@ using System.Windows.Media.Imaging;
 using iTextSharp.text.pdf;
 using PDFToolbox.Models;
 using System.Drawing;
+using Factories;
 
 namespace PDFToolbox.Helpers
 {
     public class PdfFileIO : BaseFileIOStrategy
     {
-        public PdfFileIO(Toolbox toolbox, FileIO fileIO)
+        private PageFactory _pageFactory;
+        public PdfFileIO(Toolbox toolbox, FileIO fileIO, PageFactory pageFactory)
             : base(toolbox, fileIO)
         {
+            _pageFactory = pageFactory;
             SetSupportedExtensions("PDF");
         }
 
@@ -22,7 +25,7 @@ namespace PDFToolbox.Helpers
         {
             string tmpFile;
             Models.Page page;
-            Models.Document doc;
+            Models.Document document;
             List<BitmapImage> pageImages = new List<BitmapImage>();
             PdfReader reader;
 
@@ -31,7 +34,7 @@ namespace PDFToolbox.Helpers
             if (string.IsNullOrEmpty(tmpFile)) return null;
 
 
-            doc = new Models.Document();
+            document = _pageFactory.CreateDocument();
 
             pageImages = GetPdfPageImages(tmpFile);
             
@@ -40,18 +43,18 @@ namespace PDFToolbox.Helpers
             for (int i = 0; i < reader.NumberOfPages; i++)
             {
                 page = CachePdfPageFromFile(info, reader, i);
-                page.image = pageImages[i];
+                page.Image = pageImages[i];
                 
-                doc.pages.Add(new Document.PageViewModel(page));
+                document.Pages.Add(_pageFactory.CopyPage(page));
             }
 
-            if (doc.pages.Count > 0)
-            {
-                doc.image = doc.pages[0].Image;
-                doc.fName = doc.pages[0].DocName;
-            }
+            //if (document.pages.Count > 0)
+            //{
+            //    document.image = document.pages[0].Image;
+            //    document.fName = document.pages[0].DocName;
+            //}
 
-            return doc;
+            return document;
         }
         public override void SaveDocument(ViewModels.DocumentViewModel document)
         {
@@ -140,10 +143,10 @@ namespace PDFToolbox.Helpers
         private Models.Page CachePdfPageFromFile(FileIOInfo info, PdfReader reader, int pageNum)
         {
             Models.Page page = new Models.Page();
-            page.number = ++pageNum;
-            page.fName = (info.IsTempPath ? info.FileName : info.FullFileName);
+            page.OriginalPageNumber = ++pageNum;
+            page.FileName = (info.IsTempPath ? info.FileName : info.FullFileName);
             //FIXME: this is making the pages render with wrong rotation unless rotation is zero
-            page.originalRotation = new PdfNumber(reader.GetPageRotation(pageNum));
+            page.OriginalRotation = new PdfNumber(reader.GetPageRotation(pageNum));
 
             return page;
         }

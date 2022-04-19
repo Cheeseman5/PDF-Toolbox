@@ -10,39 +10,18 @@ namespace PDFToolbox.Models
     public class Document
     {
         // image used to display in pageDict/document views
-        public BitmapImage image { get; set; }
-        public string fName { get; set; } = "";
-        public int originalPageNumber { get; set; }
-        public PdfNumber rotation { get; set; } = new PdfNumber(0f);
+        public BitmapImage Image;
+        public string FileName;
+        public int OriginalPageNumber;
+        public PdfNumber Rotation;
         // Original rotation of pageDict (in degrees)
-        public PdfNumber originalRotation { get; set; } = new PdfNumber(0f);
+        public PdfNumber OriginalRotation;
         // True = image is ignored on PDF creation; False = image is used
-        public bool isImagePreview { get; set; }
-        public Stream imageStream { get; set; }
-        public ObservableCollection<UIString> uiStrings { get; set; }
-        public int ID { get; set; }
-
-        public FileStream document { get; set; }
-        public List<PageViewModel> pages { get; set; } = new List<PageViewModel>();
-
-        public class PageViewModel
-        {
-            private Page _page;
-            public BitmapImage Image { get; set; }
-            public string DocName { get; set; }
-            public double Scale { get; set; }
-            public bool IsSelected { get; set; }
-            public int Number { get; set; }
-            public float Rotation { get; set; }
-            public float FlatRotation { get; set; }
-            public Stream ImageStream { get; set; }
-            public ObservableCollection<Models.UIString> Strings { get; set; }
-            public int ID { get; set; }
-            public void OnStringsChanged(object sender, NotifyCollectionChangedEventArgs e) { }
-            public PageViewModel(Page page)
-            { _page = page; }
-            public void Copy(PageViewModel page) { }
-
-        }
+        public bool IsImagePreview;
+        public Stream ImageStream;
+        public ObservableCollection<UIString> UIStrings;
+        public int ID;
+        public FileStream DocumentFile;
+        public List<Page> Pages;
     }
 }

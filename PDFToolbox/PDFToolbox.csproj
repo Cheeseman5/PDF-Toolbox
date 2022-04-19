@@ -175,8 +175,6 @@
     <Compile Include="IO\ImagesFileIO.cs" />
     <Compile Include="IO\OutlookAttachmentExtractor.cs" />
     <Compile Include="IO\PdfFileIO.cs" />
-    <Compile Include="Models\Document.cs" />
-    <Compile Include="Models\Page.cs" />
     <Compile Include="PDF\BasePdfConvert.cs" />
     <Compile Include="PDF\PdfConverter.cs" />
     <Compile Include="PDF\PdfConvertIText.cs" />
@@ -293,6 +291,10 @@
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{a32410bc-b5bf-4e59-a970-e3734736b70b}</Project>
       <Name>Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Models\Models.csproj">
+      <Project>{DDA4FC6C-C6FA-4C3D-AC51-E262F297CACA}</Project>
+      <Name>Models</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
