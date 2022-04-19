@@ -122,16 +122,6 @@ namespace PDFToolbox.Helpers
 
         #endregion
         #region IO
-        public MemoryStream Load(string fPath)
-        {
-            if (IsFileValid(fPath)) return null;
-
-            BaseFileIOStrategy loader = GetValidIOStrategy(fPath);
-
-            if (loader == null) return null;
-            _logger.Log("FileIO.Load: {0}", fPath);
-            return loader.Load(fPath);
-        }
         public Models.Document LoadDocument(FileIOInfo info)
         {
             // Return null if 'fPath' is invalid
@@ -146,20 +136,6 @@ namespace PDFToolbox.Helpers
 
             _logger.Log("FileIO.LoadDocument: {0}: {1}", loader.GetType(), info.FullFileName);
             return loader.LoadDocument(info);
-        }
-        public void SaveDocument(ViewModels.DocumentViewModel document)
-        {
-            if (document == null) return;
-
-            // Default file type is 'PDF' if none provided in docName (ext was omited)
-            string ext = "";
-            if(string.IsNullOrEmpty(ParseExtension(document.DocName))) ext = ".PDF";
-
-            BaseFileIOStrategy strategy = GetValidIOStrategy(document.DocName + ext);
-
-            if (strategy == null) return;
-
-            strategy.SaveDocument(document);
         }
         #endregion
         #endregion
@@ -193,40 +169,6 @@ namespace PDFToolbox.Helpers
             }
             return ext;
         }
-        private bool SaveTemp(FileIOInfo info)
-        {
-            if (info == null || info.Stream==null || info.Stream.Length==0) return false;
-
-            if (_extractedSrcFiles == null)
-                _extractedSrcFiles = new List<string>();
-
-            try
-            {
-                FileStream file;
-                string tmpPath = ToTempFileName(info.FileName);
-
-                file = new FileStream(tmpPath, FileMode.Create);
-                info.Stream.CopyTo(file, (int)info.Stream.Length);
-
-                _extractedSrcFiles.Add(tmpPath);
-            }
-            catch (Exception e)
-            {
-                _toolbox.MessageBoxException(e);
-                return false;
-            }
-            return true;
-        }
-        public bool TempFileExists(string fPath)
-        {
-            if(!IsFileValid(fPath)) return false;
-
-            BaseFileIOStrategy loader = GetValidIOStrategy(fPath);
-
-            if (loader == null) return false;
-
-            return loader.TempExists(fPath);
-        }
         public string ToTempFileName(string fPath)
         {
             return ToTempFileName(fPath, -1);
@@ -258,44 +200,6 @@ namespace PDFToolbox.Helpers
             if (!IsFileValid(file)) return false;
 
             return _fileLoaders.ContainsKey(ParseExtension(file));
-        }
-        public bool IsExtensionSupported(string[] files)
-        {
-            if (files == null) return false;
-
-            foreach (string file in files)
-            {
-                if (!IsExtensionSupported(file))
-                    return false;
-            }
-            return true;
-        }
-
-
-        public void Cleanup()
-        {
-            foreach (KeyValuePair<string, BaseFileIOStrategy> entry in _fileLoaders)
-            {
-                if (entry.Value == null) continue;
-
-                entry.Value.DeleteTempFiles();
-            }
-            // Delete extracted files
-            if (_extractedSrcFiles != null && _extractedSrcFiles.Count > 0)
-            {
-                foreach (string file in _extractedSrcFiles)
-                {
-                    try
-                    {
-                        File.Delete(file);
-                    }
-                    catch (Exception e)
-                    {
-                        _toolbox.MessageBoxException(e);
-                    }
-                }
-                _extractedSrcFiles.Clear();
-            }
         }
         #endregion
     }
