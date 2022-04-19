@@ -15,28 +15,6 @@ namespace PDFToolbox.ViewModels
         private Models.Page _page;
         private PageFactory _pageFactory;
 
-        private double _scale;
-        public double Scale
-        {
-            get { return _scale; }
-            set
-            {
-                _scale = value;
-                OnPropertyChanged("Scale");
-            }
-        }
-
-        private bool _isSelected;
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set
-            {
-                _isSelected = value;
-                OnPropertyChanged("IsSelected");
-            }
-        }
-
         public PageViewModel(Models.Page page, PageFactory pageFactory)
         {
             SetPage(page);
@@ -59,7 +37,6 @@ namespace PDFToolbox.ViewModels
         public void Copy(PageViewModel page)
         {
             _pageFactory.CopyPage(page._page);
-            //this._page.Copy(page._page);
         }
         public PageViewModel MakeCopy(PageViewModel page)
         {
@@ -115,23 +92,12 @@ namespace PDFToolbox.ViewModels
         public float FlatRotation
         {
             get { return _page.Rotation.FloatValue + _page.OriginalRotation.FloatValue; }
-            /*set
-            {
-                _page.SetRotation(value);
-                OnPropertyChanged("Rotation");
-            }*/
-        }
-
-        // Delete?
-        /*public bool IsImagePreview
-        {
-            get { return _page.isImagePreview; }
             set
             {
-                _page.isImagePreview = value;
-                OnPropertyChanged("IsImagePreview");
+                _page.Rotation = new PdfNumber(value);
+                OnPropertyChanged("Rotation");
             }
-        }*/
+        }
 
         public Stream ImageStream
         {
@@ -162,8 +128,6 @@ namespace PDFToolbox.ViewModels
         {
             // Notify that Count may have been changed
             OnPropertyChanged("StringsCount");
-
-
         }
     }
 }
