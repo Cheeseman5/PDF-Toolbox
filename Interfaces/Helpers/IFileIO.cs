@@ -1,5 +1,4 @@
 ﻿using PDFToolbox.Models;
-//using System.Runtime.InteropServices.ComTypes;
 using System.Windows;
 
 namespace PDFToolbox.Interfaces.Helpers
@@ -7,7 +6,7 @@ namespace PDFToolbox.Interfaces.Helpers
     public interface IFileIO
     {
         //void RegisterStrategy(BaseIOStrategy strategy);
-        FileIOInfo[] ExtractFileInfo(System.Windows.IDataObject data);
+        FileIOInfo[] ExtractFileInfo(IDataObject data);
         Document[] ExtractDocument(FileIOInfo[] files);
         Document[] ExtractDocument(IDataObject data);
         Document LoadDocument(FileIOInfo info);
