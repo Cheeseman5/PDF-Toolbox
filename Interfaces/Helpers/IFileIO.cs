@@ -5,7 +5,8 @@ namespace PDFToolbox.Interfaces.Helpers
 {
     public interface IFileIO
     {
-        //void RegisterStrategy(BaseIOStrategy strategy);
+        void RegisterStrategy(IFileIOStrategy strategy);
+        void RegisterExtractor(IFileIOExtractor extractor);
         FileIOInfo[] ExtractFileInfo(IDataObject data);
         Document[] ExtractDocument(FileIOInfo[] files);
         Document[] ExtractDocument(IDataObject data);

@@ -21,35 +21,35 @@ namespace PDFToolbox.Helpers
             _tmpFiles = new List<string>();
         }
 
-        public virtual MemoryStream Load(string fPath)
-        {
-            if (string.IsNullOrEmpty(fPath)) throw new ArgumentNullException("fPath","fPath was null or empty");
-            if(!IsFileSupported(fPath)) throw new FileLoadException("File type is not supported by this object",fPath);
+        //public virtual MemoryStream Load(string fPath)
+        //{
+        //    if (string.IsNullOrEmpty(fPath)) throw new ArgumentNullException("fPath","fPath was null or empty");
+        //    if(!IsFileSupported(fPath)) throw new FileLoadException("File type is not supported by this object",fPath);
 
-            MemoryStream stream = null;
-            string fullPath = Path.GetFullPath(fPath);
-            FileStream file = null;
+        //    MemoryStream stream = null;
+        //    string fullPath = Path.GetFullPath(fPath);
+        //    FileStream file = null;
 
-            if (File.Exists(fullPath))
-            {
-                try
-                {
-                    file = File.OpenRead(fullPath);
-                    if (file != null)
-                    {
-                        stream = new MemoryStream();
-                        file.CopyTo(stream);
-                    }
-                    file.Close();
-                }
-                catch (Exception e)
-                {
-                    _toolbox.MessageBoxException(e);
-                }
-            }
+        //    if (File.Exists(fullPath))
+        //    {
+        //        try
+        //        {
+        //            file = File.OpenRead(fullPath);
+        //            if (file != null)
+        //            {
+        //                stream = new MemoryStream();
+        //                file.CopyTo(stream);
+        //            }
+        //            file.Close();
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            _toolbox.MessageBoxException(e);
+        //        }
+        //    }
 
-            return stream;
-        }
+        //    return stream;
+        //}
         public abstract Models.Document LoadDocument(FileIOInfo info);
         public abstract void SaveDocument(ViewModels.DocumentViewModel document);
 
@@ -86,21 +86,21 @@ namespace PDFToolbox.Helpers
 
             return tmp;
         }
-        public bool TempExists(string fPath)
-        {
-            return _tmpFiles.Contains(_fileIO.ToTempFileName(fPath));
-        }
-        public void DeleteTempFiles()
-        {
-            foreach (string file in _tmpFiles)
-            {
-                if (File.Exists(file))
-                {
-                    File.Delete(file);
-                }
-            }
-            _tmpFiles.Clear();
-        }
+        //public bool TempExists(string fPath)
+        //{
+        //    return _tmpFiles.Contains(_fileIO.ToTempFileName(fPath));
+        //}
+        //public void DeleteTempFiles()
+        //{
+        //    foreach (string file in _tmpFiles)
+        //    {
+        //        if (File.Exists(file))
+        //        {
+        //            File.Delete(file);
+        //        }
+        //    }
+        //    _tmpFiles.Clear();
+        //}
 
         protected void SetSupportedExtensions(params string[] extensions)
         {

@@ -6,26 +6,37 @@ using System.Windows.Media.Imaging;
 
 using iTextSharp.text.pdf;
 using PDFToolbox.Models;
+using PDFToolbox.Interfaces;
 using System.Drawing;
 using Factories;
+using PDFToolbox.Interfaces.Helpers;
+using System.Linq;
 
 namespace PDFToolbox.Helpers
 {
-    public class PdfFileIO : BaseFileIOStrategy
+    public class PdfFileIO : IFileIOStrategy
     {
         private PageFactory _pageFactory;
+        private Toolbox _toolbox;
+        private IFileIO _fileIO;
+        private List<string> _tmpFiles;
+        public string[] SupportedExtentions;
         public PdfFileIO(Toolbox toolbox, FileIO fileIO, PageFactory pageFactory)
-            : base(toolbox, fileIO)
         {
             _pageFactory = pageFactory;
+            _toolbox = toolbox;
+            _fileIO = fileIO;
+            _tmpFiles = new List<string>();
+            SupportedExtentions = new string[1];
+
             SetSupportedExtensions("PDF");
         }
 
-        public override Models.Document LoadDocument(FileIOInfo info)
+        public Document LoadDocument(Models.FileIOInfo info)
         {
             string tmpFile;
-            Models.Page page;
-            Models.Document document;
+            Page page;
+            Document document;
             List<BitmapImage> pageImages = new List<BitmapImage>();
             PdfReader reader;
 
@@ -48,15 +59,9 @@ namespace PDFToolbox.Helpers
                 document.Pages.Add(_pageFactory.CopyPage(page));
             }
 
-            //if (document.pages.Count > 0)
-            //{
-            //    document.image = document.pages[0].Image;
-            //    document.fName = document.pages[0].DocName;
-            //}
-
             return document;
         }
-        public override void SaveDocument(ViewModels.DocumentViewModel document)
+        public void SaveDocument(ViewModels.DocumentViewModel document)
         {
             string srcDocPath;
             string targetFilePath = SafeFilePath(document.DocName);
@@ -139,10 +144,83 @@ namespace PDFToolbox.Helpers
                 _toolbox.MessageBoxException(e);
             }
         }
-
-        private Models.Page CachePdfPageFromFile(FileIOInfo info, PdfReader reader, int pageNum)
+        public string CopyToTemp(string fPath)
         {
-            Models.Page page = new Models.Page();
+            if (string.IsNullOrEmpty(fPath) || !IsFileSupported(fPath)) return string.Empty;
+
+            string tmp = _fileIO.ToTempFileName(fPath);
+            string dir = Path.GetDirectoryName(tmp);
+            FileStream inputFile;
+            FileStream outputFile;
+
+            try
+            {
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                inputFile = File.OpenRead(fPath);
+                outputFile = new FileStream(tmp, FileMode.Create);
+
+                inputFile.CopyTo(outputFile);
+
+                inputFile.Close();
+                outputFile.Close();
+            }
+            catch (Exception e)
+            {
+                tmp = string.Empty;
+                _toolbox.MessageBoxException(e);
+            }
+            if (!string.IsNullOrEmpty(tmp) && !string.IsNullOrWhiteSpace(tmp))
+                _tmpFiles.Add(tmp);
+
+            return tmp;
+        }
+        public void SetSupportedExtensions(params string[] extensions)
+        {
+            if (SupportedExtentions != null) return;
+
+            for (int i = 0; i < extensions.Length; i++)
+            {
+                extensions[i] = extensions[0].ToUpperInvariant();
+                if (extensions[i].StartsWith("."))
+                    extensions[i].TrimStart('.');
+            }
+
+            SupportedExtentions = extensions.ToArray();
+        }
+        public bool IsExtensionSupported(string extension)
+        {
+            extension = extension.Replace(".", "");
+            foreach (string ext in SupportedExtentions)
+            {
+                if (string.Equals(ext.ToUpperInvariant(), extension.ToUpperInvariant()))
+                    return true;
+            }
+            return false;
+        }
+        public bool IsFileSupported(string fPath)
+        {
+            return IsExtensionSupported(Path.GetExtension(fPath));
+        }
+        protected string SafeFilePath(string fPath)
+        {
+            string dir = Path.GetDirectoryName(fPath);
+            string ext = Path.GetExtension(fPath);
+            string name = Path.GetFileNameWithoutExtension(fPath);
+
+            if (string.IsNullOrEmpty(dir))
+                fPath = _fileIO.SaveDirectoryDefault + fPath;
+
+            if (string.IsNullOrEmpty(ext))
+                fPath = fPath + (string.Compare(".", ext) == 0 ? "" : ".") + "pdf";
+
+            return fPath;
+        }
+
+        private Page CachePdfPageFromFile(FileIOInfo info, PdfReader reader, int pageNum)
+        {
+            Page page = new Page();
             page.OriginalPageNumber = ++pageNum;
             page.FileName = (info.IsTempPath ? info.FileName : info.FullFileName);
             //FIXME: this is making the pages render with wrong rotation unless rotation is zero
@@ -150,7 +228,6 @@ namespace PDFToolbox.Helpers
 
             return page;
         }
-
         private BitmapImage GetPdfPageImage(PdfiumViewer.PdfDocument pDoc, int pageNum)
         {
             BitmapImage image = new BitmapImage();

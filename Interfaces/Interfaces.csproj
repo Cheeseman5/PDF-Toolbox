@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\IFileIO.cs" />
+    <Compile Include="Helpers\IFileIOExtractor.cs" />
+    <Compile Include="Helpers\IFileIOStrategy.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="ISystemFileRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

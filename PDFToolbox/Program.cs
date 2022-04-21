@@ -1,6 +1,7 @@
 ﻿using Factories;
 using PDFToolbox.Helpers;
 using PDFToolbox.Interfaces;
+using PDFToolbox.Interfaces.Helpers;
 using PDFToolbox.IO;
 using System;
 using System.Reflection;
@@ -26,13 +27,13 @@ namespace PDFToolbox
             ILogger logger = new ConsoleLogger(ConsoleLogger.eDebuggerDetail.Log);
             var fileIO = new Helpers.FileIO(toolbox, logger);
 
-            Helpers.BaseFileIOExtractor outlookExtractor = new Helpers.OutlookAttachmentExtractor(fileIO);
-            Helpers.BaseFileIOExtractor fileDropExtractor = new Helpers.FileDropExtractor();
-            Helpers.BaseFileIOStrategy pdfFileIO = new Helpers.PdfFileIO(toolbox, fileIO, pageFactory);
+            IFileIOExtractor outlookExtractor = new Helpers.OutlookAttachmentExtractor(fileIO);
+            IFileIOExtractor fileDropExtractor = new Helpers.FileDropExtractor();
+            IFileIOStrategy pdfFileIO = new Helpers.PdfFileIO(toolbox, fileIO, pageFactory);
 
             // Register Extractors (pre-loaders)
-            fileIO.RegisterStrategy(outlookExtractor);
-            fileIO.RegisterStrategy(fileDropExtractor);
+            fileIO.RegisterExtractor(outlookExtractor);
+            fileIO.RegisterExtractor(fileDropExtractor);
             // Register normal 
             fileIO.RegisterStrategy(pdfFileIO);
 

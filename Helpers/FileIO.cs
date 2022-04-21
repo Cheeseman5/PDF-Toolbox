@@ -1,15 +1,15 @@
 ﻿using PDFToolbox.Interfaces;
-using System;
+using PDFToolbox.Interfaces.Helpers;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 
 namespace PDFToolbox.Helpers
 {
-    public class FileIO
+    public class FileIO : IFileIO
     {
-        private Dictionary<string, BaseFileIOStrategy> _fileLoaders = null;
-        private List<BaseFileIOExtractor> _fileExtractors = null;
+        private Dictionary<string, IFileIOStrategy> _fileLoaders = null;
+        private List<IFileIOExtractor> _fileExtractors = null;
         private List<string> _extractedSrcFiles = null;
         private Toolbox _toolbox;
         private ILogger _logger;
@@ -31,47 +31,37 @@ namespace PDFToolbox.Helpers
         {
             _toolbox = toolbox;
             _logger = logger;
+            _fileLoaders = new Dictionary<string, IFileIOStrategy>();
+            _fileExtractors = new List<IFileIOExtractor>();
         }
 
-        public void RegisterStrategy(BaseIOStrategy strategy)
+        public void RegisterStrategy(IFileIOStrategy strategy)
         {
-            if (_fileLoaders == null)
-                _fileLoaders = new Dictionary<string, BaseFileIOStrategy>();
+            _logger.Log($"FileIO.RegisterStrategy: {strategy.GetType()}");
 
-            if (_fileExtractors == null)
-                _fileExtractors = new List<BaseFileIOExtractor>();
+            string[] exts = strategy.SupportedExtentions;
 
-            _logger.Log("FileIO.RegisterStrategy: {0}", strategy.GetType());
-
-            // File IO
-            if (strategy is BaseFileIOStrategy)
+            foreach (string ext in exts)
             {
-                string[] exts = ((BaseFileIOStrategy)strategy).SupportedExtentions;
-
-                foreach (string ext in exts)
-                {
-                    if (!_fileLoaders.ContainsKey(ext))
-                        _fileLoaders.Add(ext.ToUpperInvariant(), strategy as BaseFileIOStrategy);
-                }
-            }
-
-            // File extractor
-            if (strategy is BaseFileIOExtractor)
-            {
-                _fileExtractors.Add(strategy as BaseFileIOExtractor);
+                if (!_fileLoaders.ContainsKey(ext))
+                    _fileLoaders.Add(ext.ToUpperInvariant(), strategy);
             }
         }
+        public void RegisterExtractor(IFileIOExtractor extractor)
+        {
+            _logger.Log($"FileIO.RegisterExtractor: {extractor.GetType()}");
+            _fileExtractors.Add(extractor);
+        }
 
-        #region Interface
         #region Extraction
-        public FileIOInfo[] ExtractFileInfo(IDataObject data)
+        public Models.FileIOInfo[] ExtractFileInfo(IDataObject data)
         {
             if (data == null) return null;
 
             //List<FileIOInfo> files = new List<FileIOInfo>();
-            FileIOInfo[] files;
+            Models.FileIOInfo[] files;
 
-            foreach (BaseFileIOExtractor extractor in _fileExtractors)
+            foreach (IFileIOExtractor extractor in _fileExtractors)
             {
                 files = extractor.GetFileStreams(data);
 
@@ -80,21 +70,20 @@ namespace PDFToolbox.Helpers
             }
             return null;
         }
-        public Models.Document[] ExtractDocument(FileIOInfo[] files)
+        public Models.Document[] ExtractDocument(Models.FileIOInfo[] files)
         {
             if (files == null || files.Length <= 0) return null;
 
             List<Models.Document> docs = new List<Models.Document>();
             Models.Document doc;
 
-            foreach (FileIOInfo info in files)
+            foreach (Models.FileIOInfo info in files)
             {
                 doc = LoadDocument(info);
 
                 if (doc != null)
                     docs.Add(doc);
             }
-            // load documents
 
             return docs.ToArray();
         }
@@ -104,12 +93,12 @@ namespace PDFToolbox.Helpers
 
             List<Models.Document> docs;
 
-            FileIOInfo[] fileInfos = ExtractFileInfo(data);
-            List<FileIOInfo> files;
+            Models.FileIOInfo[] fileInfos = ExtractFileInfo(data);
+            List<Models.FileIOInfo> files;
 
             if (fileInfos == null || fileInfos.Length <= 0) return null;
 
-            files = new List<FileIOInfo>(fileInfos);
+            files = new List<Models.FileIOInfo>(fileInfos);
 
             if (files.Count > 0)
             {
@@ -122,12 +111,12 @@ namespace PDFToolbox.Helpers
 
         #endregion
         #region IO
-        public Models.Document LoadDocument(FileIOInfo info)
+        public Models.Document LoadDocument(Models.FileIOInfo info)
         {
             // Return null if 'fPath' is invalid
             if (info==null || !IsFileValid(info.FullFileName)) return null;
 
-            BaseFileIOStrategy loader;
+            IFileIOStrategy loader;
 
             loader = GetValidIOStrategy(info.FullFileName);
 
@@ -138,12 +127,11 @@ namespace PDFToolbox.Helpers
             return loader.LoadDocument(info);
         }
         #endregion
-        #endregion
 
         #region Utils
-        private BaseFileIOStrategy GetValidIOStrategy(string fPath)
+        private IFileIOStrategy GetValidIOStrategy(string fPath)
         {
-            BaseFileIOStrategy loader;
+            IFileIOStrategy loader;
             string ext = ParseExtension(fPath);
 
             _logger.Log("FileIO.GetValidIOStrategy(\"{0}\"): Ext: {1}", fPath, ext);
