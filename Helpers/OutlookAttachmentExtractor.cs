@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PDFToolbox.Interfaces.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
@@ -6,7 +7,7 @@ using System.Windows;
 
 namespace PDFToolbox.Helpers
 {
-    public class OutlookAttachmentExtractor : BaseFileIOExtractor
+    public class OutlookAttachmentExtractor : IFileIOExtractor
     {
         public FileIO _fileIO;
 
@@ -16,7 +17,7 @@ namespace PDFToolbox.Helpers
             _fileIO = fileIO;
         }
 
-        public override FileIOInfo[] GetFileStreams(IDataObject data)
+        public Models.FileIOInfo[] GetFileStreams(IDataObject data)
         {
             if (!data.GetDataPresent("FileGroupDescriptor")) return null;
 
