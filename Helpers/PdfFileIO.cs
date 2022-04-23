@@ -20,13 +20,15 @@ namespace PDFToolbox.Helpers
         private Toolbox _toolbox;
         private IFileIO _fileIO;
         private List<string> _tmpFiles;
-        public string[] SupportedExtentions;
-        public PdfFileIO(Toolbox toolbox, FileIO fileIO, PageFactory pageFactory)
+        private string _defaultSaveDirectory;
+        public string[] SupportedExtentions { get; set; }
+        public PdfFileIO(Toolbox toolbox, FileIO fileIO, PageFactory pageFactory, string defaultSaveDirectory)
         {
             _pageFactory = pageFactory;
             _toolbox = toolbox;
             _fileIO = fileIO;
             _tmpFiles = new List<string>();
+            _defaultSaveDirectory = defaultSaveDirectory;
             SupportedExtentions = new string[1];
 
             SetSupportedExtensions("PDF");
@@ -203,14 +205,14 @@ namespace PDFToolbox.Helpers
         {
             return IsExtensionSupported(Path.GetExtension(fPath));
         }
-        protected string SafeFilePath(string fPath)
+        public string SafeFilePath(string fPath)
         {
             string dir = Path.GetDirectoryName(fPath);
             string ext = Path.GetExtension(fPath);
             string name = Path.GetFileNameWithoutExtension(fPath);
 
             if (string.IsNullOrEmpty(dir))
-                fPath = _fileIO.SaveDirectoryDefault + fPath;
+                fPath = _defaultSaveDirectory + fPath;
 
             if (string.IsNullOrEmpty(ext))
                 fPath = fPath + (string.Compare(".", ext) == 0 ? "" : ".") + "pdf";
