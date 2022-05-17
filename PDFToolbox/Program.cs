@@ -22,6 +22,7 @@ namespace PDFToolbox
                 return;
             }
 
+            string defaultSaveLocation = "./";
             var toolbox = new Helpers.Toolbox();
             var pageFactory = new PageFactory();
             ILogger logger = new ConsoleLogger(ConsoleLogger.eDebuggerDetail.Log);
@@ -29,7 +30,7 @@ namespace PDFToolbox
 
             IFileIOExtractor outlookExtractor = new Helpers.OutlookAttachmentExtractor(fileIO);
             IFileIOExtractor fileDropExtractor = new Helpers.FileDropExtractor();
-            IFileIOStrategy pdfFileIO = new Helpers.PdfFileIO(toolbox, fileIO, pageFactory);
+            IFileIOStrategy pdfFileIO = new Helpers.PdfFileIO(toolbox, fileIO, pageFactory, defaultSaveLocation);
 
             // Register Extractors (pre-loaders)
             fileIO.RegisterExtractor(outlookExtractor);

@@ -220,7 +220,7 @@ namespace PDFToolbox.Helpers
             return fPath;
         }
 
-        private Page CachePdfPageFromFile(FileIOInfo info, PdfReader reader, int pageNum)
+        private Page CachePdfPageFromFile(Models.FileIOInfo info, PdfReader reader, int pageNum)
         {
             Page page = new Page();
             page.OriginalPageNumber = ++pageNum;

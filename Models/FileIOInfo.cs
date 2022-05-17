@@ -33,6 +33,9 @@ namespace PDFToolbox.Models
             get { return Path.GetDirectoryName(_fullPath); }
             set { FullFileName = value + Path.GetFileName(_fullPath); }
         }
+
+        public bool IsTempPath { get; set; }
+
         /// <summary>
         /// Gets the fully usable file path name. <para>Sets the fully usable file path name.</para>
         /// </summary>

@@ -15,17 +15,17 @@ namespace PDFToolbox.Helpers
         {
             if(data==null || !data.GetDataPresent(DataFormats.FileDrop)) return null;
 
-            List<FileIOInfo> infos;
-            FileIOInfo info;
+            List<Models.FileIOInfo> infos;
+            Models.FileIOInfo info;
             string[] files = data.GetData(DataFormats.FileDrop) as string[];
 
             if (files != null && files.Length > 0)
             {
-                infos = new List<FileIOInfo>();
+                infos = new List<Models.FileIOInfo>();
 
                 foreach (string file in files)
                 {
-                    info = new FileIOInfo();
+                    info = new Models.FileIOInfo();
                     info.Stream = File.OpenRead(file);
                     info.FullFileName = file;
                     

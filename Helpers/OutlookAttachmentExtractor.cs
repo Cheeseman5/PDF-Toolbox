@@ -27,7 +27,7 @@ namespace PDFToolbox.Helpers
             Models.Document doc;
             Stream stream = data.GetData("FileGroupDescriptorW") as Stream;
             FileStream file;
-            FileIOInfo info;
+            Models.FileIOInfo info;
 
             if (stream != null)
             {
@@ -36,7 +36,7 @@ namespace PDFToolbox.Helpers
                 tmpPath = _fileIO.SaveDirectoryTemp;
                 docs = new List<Models.Document>();
                 doc = new Models.Document();
-                info = new FileIOInfo();
+                info = new Models.FileIOInfo();
 
 
                 if (data.GetDataPresent("FileContents", false))
@@ -49,7 +49,7 @@ namespace PDFToolbox.Helpers
                     info.Stream.CopyTo(file);
                     file.Close();
 
-                    return new FileIOInfo[] { info };
+                    return new Models.FileIOInfo[] { info };
                 }
             }
             return null;
