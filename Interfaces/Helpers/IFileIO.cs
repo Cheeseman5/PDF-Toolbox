@@ -17,5 +17,6 @@ namespace PDFToolbox.Interfaces.Helpers
         bool IsExtensionSupported(string file);
 
         void CopyToTemp(string fPath);
+        string MakeFilePathSafe(string fPath, string defaultSaveDirectory);
     }
 }

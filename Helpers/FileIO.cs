@@ -209,6 +209,20 @@ namespace PDFToolbox.Helpers
 
             return _fileLoaders.ContainsKey(ParseExtension(file));
         }
+
+        public string MakeFilePathSafe(string fPath, string defaultSaveDirectory)
+        {
+            string dir = Path.GetDirectoryName(fPath);
+            string ext = Path.GetExtension(fPath);
+
+            if (string.IsNullOrEmpty(dir))
+                fPath = defaultSaveDirectory + fPath;
+
+            if (string.IsNullOrEmpty(ext))
+                fPath = fPath + (string.Compare(".", ext) == 0 ? "" : ".") + "pdf";
+
+            return fPath;
+        }
         #endregion
     }
 }

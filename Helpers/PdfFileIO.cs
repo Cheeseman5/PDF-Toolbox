@@ -183,17 +183,8 @@ namespace PDFToolbox.Helpers
         }
         public string SafeFilePath(string fPath)
         {
-            string dir = Path.GetDirectoryName(fPath);
-            string ext = Path.GetExtension(fPath);
-            string name = Path.GetFileNameWithoutExtension(fPath);
-
-            if (string.IsNullOrEmpty(dir))
-                fPath = _defaultSaveDirectory + fPath;
-
-            if (string.IsNullOrEmpty(ext))
-                fPath = fPath + (string.Compare(".", ext) == 0 ? "" : ".") + "pdf";
-
-            return fPath;
+            string safeFilePath = _fileIO.MakeFilePathSafe(fPath, _defaultSaveDirectory);
+            return safeFilePath;
         }
 
         private Page CachePdfPageFromFile(Models.FileIOInfo info, PdfReader reader, int pageNum)
