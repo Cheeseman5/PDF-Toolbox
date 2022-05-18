@@ -9,8 +9,8 @@ namespace PDFToolbox.Helpers
 {
     public class FileIO : IFileIO
     {
-        private Dictionary<string, IFileIOStrategy> _fileLoaders = null;
-        private List<IFileIOExtractor> _fileExtractors = null;
+        private Dictionary<string, IFileIOStrategy> _fileLoaders;
+        private List<IFileIOExtractor> _fileExtractors;
         private Toolbox _toolbox;
         private ILogger _logger;
 
