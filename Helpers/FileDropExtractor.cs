@@ -7,33 +7,37 @@ namespace PDFToolbox.Helpers
 {
     public class FileDropExtractor : IFileIOExtractor
     {
-        public FileDropExtractor()
-            : base()
-        { }
-
         public Models.FileIOInfo[] GetFileStreams(IDataObject data)
         {
-            if(data==null || !data.GetDataPresent(DataFormats.FileDrop)) return null;
-
-            List<Models.FileIOInfo> infos;
-            Models.FileIOInfo info;
-            string[] files = data.GetData(DataFormats.FileDrop) as string[];
-
-            if (files != null && files.Length > 0)
+            if (data == null || !data.GetDataPresent(DataFormats.FileDrop))
             {
-                infos = new List<Models.FileIOInfo>();
-
-                foreach (string file in files)
-                {
-                    info = new Models.FileIOInfo();
-                    info.Stream = File.OpenRead(file);
-                    info.FullFileName = file;
-                    
-                    infos.Add(info);
-                }
-                return infos.ToArray();
+                return null;
             }
-            return null;
+
+            var files = data.GetData(DataFormats.FileDrop) as string[];
+
+            if (files == null || files?.Length == 0)
+            {
+                return null;
+            }
+
+            var infos = new List<Models.FileIOInfo>();
+
+            foreach (string file in files)
+            {
+                var info = GetFileInfo(file);
+                infos.Add(info);
+            }
+            return infos.ToArray();
+        }
+
+        private Models.FileIOInfo GetFileInfo(string filePath)
+        {
+            var info = new Models.FileIOInfo();
+            info.Stream = File.OpenRead(filePath);
+            info.FullFileName = filePath;
+
+            return info;
         }
     }
 }
