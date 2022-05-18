@@ -1,5 +1,6 @@
 ﻿using PDFToolbox.Interfaces;
 using PDFToolbox.Interfaces.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
@@ -125,6 +126,25 @@ namespace PDFToolbox.Helpers
 
             _logger.Log("FileIO.LoadDocument: {0}: {1}", loader.GetType(), info.FullFileName);
             return loader.LoadDocument(info);
+        }
+
+        public void CopyToTemp(string fPath)
+        {
+            string tmp = ToTempFileName(fPath);
+            string dir = Path.GetDirectoryName(tmp);
+
+            try
+            {
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                File.Copy(fPath, tmp);
+            }
+            catch (Exception e)
+            {
+                tmp = string.Empty;
+                _toolbox.MessageBoxException(e);
+            }
         }
         #endregion
 

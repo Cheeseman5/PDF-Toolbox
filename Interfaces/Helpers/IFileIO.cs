@@ -15,5 +15,7 @@ namespace PDFToolbox.Interfaces.Helpers
         string ToTempFileName(string fPath, int pageNumber);
         bool IsFileValid(string fPath, bool checkFileExistance = false);
         bool IsExtensionSupported(string file);
+
+        void CopyToTemp(string fPath);
     }
 }

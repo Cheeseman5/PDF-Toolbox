@@ -19,15 +19,13 @@ namespace PDFToolbox.Helpers
         private PageFactory _pageFactory;
         private Toolbox _toolbox;
         private IFileIO _fileIO;
-        private List<string> _tmpFiles;
         private string _defaultSaveDirectory;
         public string[] SupportedExtentions { get; set; }
-        public PdfFileIO(Toolbox toolbox, FileIO fileIO, PageFactory pageFactory, string defaultSaveDirectory)
+        public PdfFileIO(Toolbox toolbox, IFileIO fileIO, PageFactory pageFactory, string defaultSaveDirectory)
         {
             _pageFactory = pageFactory;
             _toolbox = toolbox;
             _fileIO = fileIO;
-            _tmpFiles = new List<string>();
             _defaultSaveDirectory = defaultSaveDirectory;
             SupportedExtentions = new string[1];
 
@@ -151,30 +149,8 @@ namespace PDFToolbox.Helpers
             if (string.IsNullOrEmpty(fPath) || !IsFileSupported(fPath)) return string.Empty;
 
             string tmp = _fileIO.ToTempFileName(fPath);
-            string dir = Path.GetDirectoryName(tmp);
-            FileStream inputFile;
-            FileStream outputFile;
 
-            try
-            {
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                inputFile = File.OpenRead(fPath);
-                outputFile = new FileStream(tmp, FileMode.Create);
-
-                inputFile.CopyTo(outputFile);
-
-                inputFile.Close();
-                outputFile.Close();
-            }
-            catch (Exception e)
-            {
-                tmp = string.Empty;
-                _toolbox.MessageBoxException(e);
-            }
-            if (!string.IsNullOrEmpty(tmp) && !string.IsNullOrWhiteSpace(tmp))
-                _tmpFiles.Add(tmp);
+            _fileIO.CopyToTemp(fPath);
 
             return tmp;
         }
