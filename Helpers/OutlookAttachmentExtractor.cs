@@ -9,60 +9,58 @@ namespace PDFToolbox.Helpers
 {
     public class OutlookAttachmentExtractor : IFileIOExtractor
     {
-        public FileIO _fileIO;
+        private FileIO _fileIO;
 
         public OutlookAttachmentExtractor(FileIO fileIO)
-            : base()
         {
             _fileIO = fileIO;
         }
 
         public Models.FileIOInfo[] GetFileStreams(IDataObject data)
         {
-            if (!data.GetDataPresent("FileGroupDescriptor")) return null;
+            var stream = data?.GetData("FileGroupDescriptor") as Stream;
 
-            string tmpPath;
-            string fName;
-            List<Models.Document> docs;
-            Models.Document doc;
-            Stream stream = data.GetData("FileGroupDescriptorW") as Stream;
-            FileStream file;
-            Models.FileIOInfo info;
-
-            if (stream != null)
+            if (stream == null || !data.GetDataPresent("FileContents", false))
             {
-
-                fName = GetAttFileName(stream);
-                tmpPath = _fileIO.DefaultTempSaveDirectory;
-                docs = new List<Models.Document>();
-                doc = new Models.Document();
-                info = new Models.FileIOInfo();
-
-
-                if (data.GetDataPresent("FileContents", false))
-                {
-                    info.Stream = data.GetData("FileContents", true) as MemoryStream;
-                    info.FullFileName = tmpPath + fName;
-                    info.IsTempPath = true;
-
-                    file = File.Create(info.FullFileName);
-                    info.Stream.CopyTo(file);
-                    file.Close();
-
-                    return new Models.FileIOInfo[] { info };
-                }
+                return null;
             }
-            return null;
+
+            string fileName = GetAttachmentFileName(stream);
+            string tmpPath = _fileIO.DefaultTempSaveDirectory;
+
+            Models.FileIOInfo info = GetFileData(data, tmpPath, fileName);
+
+            return new Models.FileIOInfo[] { info };
         }
 
-        private string GetAttFileName(Stream stream)
+        private Models.FileIOInfo GetFileData(IDataObject data, string tempPath, string fileName)
         {
-            if (stream == null) return "";
+            var info = new Models.FileIOInfo();
+
+            info.Stream = data.GetData("FileContents", true) as MemoryStream;
+            info.FullFileName = tempPath + fileName;
+            info.IsTempPath = true;
+
+            using (FileStream file = File.Create(info.FullFileName))
+            {
+                info.Stream.CopyTo(file);
+            }
+
+            return info;
+        }
+
+        private string GetAttachmentFileName(Stream stream)
+        {
+            if (stream == null)
+            {
+                return "";
+            }
 
             string fName = "";
-            byte[] fileRaw = new byte[512];
+            byte[] fileRaw = new byte[512]; // why 512...?
             stream.Read(fileRaw, 0, 512);
 
+            // why 76...?
             for (int i = 76; fileRaw[i] != 0; i+=2)
             {
                 fName += Convert.ToChar(fileRaw[i]);
