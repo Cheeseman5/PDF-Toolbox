@@ -58,7 +58,10 @@ namespace PDFToolbox.Helpers
         #region Extraction
         public Models.FileIOInfo[] ExtractFileInfo(IDataObject data)
         {
-            if (data == null) return null;
+            if (data == null)
+            {
+                return null;
+            }
 
             Models.FileIOInfo[] files;
 
@@ -73,9 +76,12 @@ namespace PDFToolbox.Helpers
         }
         public Models.Document[] ExtractDocument(Models.FileIOInfo[] files)
         {
-            if (files == null || files.Length <= 0) return null;
+            if (files == null || files.Length <= 0)
+            {
+                return null;
+            }
 
-            List<Models.Document> docs = new List<Models.Document>();
+            var docs = new List<Models.Document>();
             Models.Document doc;
 
             foreach (Models.FileIOInfo info in files)
