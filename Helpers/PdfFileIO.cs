@@ -238,14 +238,12 @@ namespace PDFToolbox.Helpers
             {
                 img = GetPdfPageImage(pDoc, i);
 
-                if(img!=null)
+                if(img==null)
                 {
-                    images.Add(img);
+                    img = new BitmapImage();
                 }
-                else
-                {
-                    images.Add(new BitmapImage());
-                }
+                
+                images.Add(img);
             }
 
             pDoc.Dispose();
