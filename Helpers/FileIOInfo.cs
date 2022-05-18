@@ -4,10 +4,7 @@ namespace PDFToolbox.Helpers
 {
     public class FileIOInfo
     {
-        public Stream Stream { get; set; }
-        
         private string _fullPath = "";
-        private bool _tempPath = false;
 
         /// <summary>
         /// Gets the file name and extension of FileIOInfo.FullFileName. <para>Sets the file name but not the extension of FileIOInfo.FullFileName.</para>
@@ -41,14 +38,6 @@ namespace PDFToolbox.Helpers
         {
             get { return _fullPath; }
             set { _fullPath = value; }
-        }
-        /// <summary>
-        /// True - FullFileName names a file that is in the temporary directory. <para>False - FullFileName names a file that is not in the temporary directory.</para>
-        /// </summary>
-        public bool IsTempPath
-        {
-            get { return _tempPath; }
-            set { _tempPath = value; }
         }
     }
 }
