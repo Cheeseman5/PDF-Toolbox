@@ -34,28 +34,29 @@ namespace PDFToolbox.Helpers
 
         public Document LoadDocument(Models.FileIOInfo info)
         {
-            string tmpFile;
-            Page page;
-            Document document;
-            List<BitmapImage> pageImages = new List<BitmapImage>();
-            PdfReader reader;
-
             //FIXME: handle temp file paths moar better...
-            tmpFile = (info.IsTempPath ? info.FullFileName : CopyToTemp(info.FullFileName));
+            string tmpFile = CopyToTemp(info.FullFileName));
+            if (info.IsTempPath)
+            {
+                tmpFile = info.FullFileName;
+            }
             if (string.IsNullOrEmpty(tmpFile)) return null;
 
+            Document document = ConstructDocument(tmpFile, info);
 
-            document = _pageFactory.CreateDocument();
+            return document;
+        }
+        private Document ConstructDocument(string filePath, Models.FileIOInfo info)
+        {
+            Document document = _pageFactory.CreateDocument();
 
-            pageImages = GetPdfPageImages(tmpFile);
-            
-            reader = new PdfReader(tmpFile);
-
+            List<BitmapImage> pageImages = GetPdfPageImages(filePath);
+            var reader = new PdfReader(filePath);
             for (int i = 0; i < reader.NumberOfPages; i++)
             {
-                page = CachePdfPageFromFile(info, reader, i);
+                Page page = CachePdfPageFromFile(info, reader, i);
                 page.Image = pageImages[i];
-                
+
                 document.Pages.Add(_pageFactory.CopyPage(page));
             }
 
