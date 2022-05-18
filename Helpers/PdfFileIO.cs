@@ -35,7 +35,7 @@ namespace PDFToolbox.Helpers
         public Document LoadDocument(Models.FileIOInfo info)
         {
             //FIXME: handle temp file paths moar better...
-            string tmpFile = CopyToTemp(info.FullFileName));
+            string tmpFile = CopyToTemp(info.FullFileName);
             if (info.IsTempPath)
             {
                 tmpFile = info.FullFileName;
