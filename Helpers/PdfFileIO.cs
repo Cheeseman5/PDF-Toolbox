@@ -191,7 +191,11 @@ namespace PDFToolbox.Helpers
         {
             Page page = new Page();
             page.OriginalPageNumber = ++pageNum;
-            page.FileName = (info.IsTempPath ? info.FileName : info.FullFileName);
+            page.FileName = info.FullFileName;
+
+            if (info.IsTempPath)
+                page.FileName = info.FileName;
+
             //FIXME: this is making the pages render with wrong rotation unless rotation is zero
             page.OriginalRotation = new PdfNumber(reader.GetPageRotation(pageNum));
 
