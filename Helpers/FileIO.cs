@@ -11,22 +11,13 @@ namespace PDFToolbox.Helpers
     {
         private Dictionary<string, IFileIOStrategy> _fileLoaders = null;
         private List<IFileIOExtractor> _fileExtractors = null;
-        private List<string> _extractedSrcFiles = null;
         private Toolbox _toolbox;
         private ILogger _logger;
 
-        public string SaveDirectoryDefault
-        {
-            get { return ".\\PDFToolbox\\"; }
-        }
-        public string SaveDirectoryTemp
-        {
-            get { return (string.IsNullOrEmpty(Path.GetTempPath()) ? ".\\temp\\" : Path.GetTempPath()); }
-        }
-        public string SaveTempPrefix
-        {
-            get { return "_tmp_"; }
-        }
+        public readonly string DefaultSaveDirectory;
+        public readonly string TempSavePrefix;
+        public readonly string DefaultTempSaveDirectory;
+        
 
         public FileIO(Toolbox toolbox, ILogger logger)
         {
@@ -34,6 +25,16 @@ namespace PDFToolbox.Helpers
             _logger = logger;
             _fileLoaders = new Dictionary<string, IFileIOStrategy>();
             _fileExtractors = new List<IFileIOExtractor>();
+
+            string tempPath = Path.GetTempPath();
+            string defaultTempSaveDirectory = tempPath;
+            if(string.IsNullOrEmpty(tempPath))
+            {
+                defaultTempSaveDirectory = ".\\temp\\";
+            }
+            DefaultTempSaveDirectory = defaultTempSaveDirectory;
+            TempSavePrefix = "_tmp_";
+            DefaultSaveDirectory = ".\\PDFToolbox\\";
         }
 
         public void RegisterStrategy(IFileIOStrategy strategy)
@@ -59,7 +60,6 @@ namespace PDFToolbox.Helpers
         {
             if (data == null) return null;
 
-            //List<FileIOInfo> files = new List<FileIOInfo>();
             Models.FileIOInfo[] files;
 
             foreach (IFileIOExtractor extractor in _fileExtractors)
@@ -90,24 +90,25 @@ namespace PDFToolbox.Helpers
         }
         public Models.Document[] ExtractDocument(IDataObject data)
         {
-            if (data == null) return null;
-
             List<Models.Document> docs;
-
             Models.FileIOInfo[] fileInfos = ExtractFileInfo(data);
             List<Models.FileIOInfo> files;
 
-            if (fileInfos == null || fileInfos.Length <= 0) return null;
+            if (fileInfos == null || fileInfos.Length <= 0)
+            {
+                return null;
+            }
 
             files = new List<Models.FileIOInfo>(fileInfos);
 
-            if (files.Count > 0)
+            if (files.Count == 0)
             {
-                docs = new List<Models.Document>();
-                docs.AddRange(ExtractDocument(files.ToArray()));
-                return docs.ToArray();
+                return null;
             }
-            return null;
+
+            docs = new List<Models.Document>();
+            docs.AddRange(ExtractDocument(files.ToArray()));
+            return docs.ToArray();
         }
 
         #endregion
@@ -115,17 +116,15 @@ namespace PDFToolbox.Helpers
         public Models.Document LoadDocument(Models.FileIOInfo info)
         {
             // Return null if 'fPath' is invalid
-            if (info==null || !IsFileValid(info.FullFileName)) return null;
+            if (info == null || !IsFileNameValid(info.FullFileName))
+            {
+                return null;
+            }
 
-            IFileIOStrategy loader;
+            IFileIOStrategy loader = GetValidIOStrategy(info.FullFileName);
 
-            loader = GetValidIOStrategy(info.FullFileName);
-
-            // Return null if no strategy available for the file type
-            if (loader == null) return null;
-
-            _logger.Log("FileIO.LoadDocument: {0}: {1}", loader.GetType(), info.FullFileName);
-            return loader.LoadDocument(info);
+            _logger.Log("FileIO.LoadDocument: {0}: {1}", loader?.GetType(), info.FullFileName);
+            return loader?.LoadDocument(info);
         }
 
         public void CopyToTemp(string fPath)
@@ -135,14 +134,12 @@ namespace PDFToolbox.Helpers
 
             try
             {
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
+                CreateDirectory(dir);
 
                 File.Copy(fPath, tmp);
             }
             catch (Exception e)
             {
-                tmp = string.Empty;
                 _toolbox.MessageBoxException(e);
             }
         }
@@ -162,11 +159,8 @@ namespace PDFToolbox.Helpers
 
             _logger.Log("FileIO.GetValidIOStrategy(\"{0}\"): Ext: {1}", fPath, ext);
 
-            if(IsFileValid(ext) && _fileLoaders.ContainsKey(ext))
-            {
-                if (_fileLoaders.TryGetValue(ext, out loader))
-                    return loader;
-            }
+            if (_fileLoaders.TryGetValue(ext, out loader))
+                return loader;
 
             return null;
         }
@@ -174,46 +168,46 @@ namespace PDFToolbox.Helpers
         {
             string ext = string.Empty;
 
-            if (IsFileValid(fPath))
+            if (!IsFileNameValid(fPath))
             {
-                 ext = Path.GetExtension(fPath);
-
-                 if (!string.IsNullOrEmpty(ext) && !string.IsNullOrWhiteSpace(ext))
-                     ext = ext.ToUpperInvariant().Replace(".", "");
+                return ext;
             }
+
+            ext = Path.GetExtension(fPath);
+
+            if (!string.IsNullOrWhiteSpace(ext))
+                ext = ext.ToUpperInvariant().Replace(".", "");
+            
             return ext;
         }
-        public string ToTempFileName(string fPath)
+        public string ToTempFileName(string fPath, int pageNumber = -1)
         {
-            return ToTempFileName(fPath, -1);
-        }
-        public string ToTempFileName(string fPath, int pageNumber)
-        {
-            string tmpPath = SaveDirectoryTemp;
-
+            string tmpPath = DefaultTempSaveDirectory;
+            string pageNumText = string.Empty;
+            if (pageNumber >= 0)
+            {
+                pageNumText = "-" + pageNumber;
+            }
+            
             // Construct temp path
-            string path = tmpPath + SaveTempPrefix +        // path
-                Path.GetFileNameWithoutExtension(fPath) +   // file name
-                (pageNumber >= 0 ? "-" + pageNumber : "") + // pageDict number if > 0
-                Path.GetExtension(fPath);                   // extention
+            string path = tmpPath +
+                TempSavePrefix +
+                Path.GetFileNameWithoutExtension(fPath) +
+                pageNumText +
+                Path.GetExtension(fPath);
 
             // Using FileInfo to handle extra path construction (i.e. ".\", "%temp%", etc.)
             FileInfo info = new FileInfo(path);
             return info.FullName;
         }
-        public bool IsFileValid(string fPath, bool checkFileExistance=false)
+        private bool IsFileNameValid(string fPath)
         {
-            if(string.IsNullOrEmpty(fPath) || string.IsNullOrWhiteSpace(fPath)) return false;
-
-            if(checkFileExistance) return File.Exists(Path.GetFullPath(fPath));
+            if (string.IsNullOrEmpty(fPath) || string.IsNullOrWhiteSpace(fPath))
+            {
+                return false;
+            }
 
             return true;
-        }
-        public bool IsExtensionSupported(string file)
-        {
-            if (!IsFileValid(file)) return false;
-
-            return _fileLoaders.ContainsKey(ParseExtension(file));
         }
 
         public string MakeFilePathSafe(string fPath, string defaultSaveDirectory)

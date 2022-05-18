@@ -11,10 +11,7 @@ namespace PDFToolbox.Interfaces.Helpers
         Document[] ExtractDocument(FileIOInfo[] files);
         Document[] ExtractDocument(IDataObject data);
         Document LoadDocument(FileIOInfo info);
-        string ToTempFileName(string fPath);
-        string ToTempFileName(string fPath, int pageNumber);
-        bool IsFileValid(string fPath, bool checkFileExistance = false);
-        bool IsExtensionSupported(string file);
+        string ToTempFileName(string fPath, int pageNumber = -1);
 
         void CopyToTemp(string fPath);
         string MakeFilePathSafe(string fPath, string defaultSaveDirectory);

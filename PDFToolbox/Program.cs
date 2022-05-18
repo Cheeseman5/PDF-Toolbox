@@ -26,7 +26,7 @@ namespace PDFToolbox
             var pageFactory = new PageFactory();
             ILogger logger = new ConsoleLogger(ConsoleLogger.eDebuggerDetail.Log);
             var fileIO = new Helpers.FileIO(toolbox, logger);
-            string defaultSaveLocation = fileIO.SaveDirectoryDefault;
+            string defaultSaveLocation = fileIO.DefaultSaveDirectory;
 
             IFileIOExtractor outlookExtractor = new Helpers.OutlookAttachmentExtractor(fileIO);
             IFileIOExtractor fileDropExtractor = new Helpers.FileDropExtractor();

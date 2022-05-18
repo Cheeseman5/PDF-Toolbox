@@ -33,7 +33,7 @@ namespace PDFToolbox.Helpers
             {
 
                 fName = GetAttFileName(stream);
-                tmpPath = _fileIO.SaveDirectoryTemp;
+                tmpPath = _fileIO.DefaultTempSaveDirectory;
                 docs = new List<Models.Document>();
                 doc = new Models.Document();
                 info = new Models.FileIOInfo();

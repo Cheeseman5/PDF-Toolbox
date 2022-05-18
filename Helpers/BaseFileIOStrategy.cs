@@ -137,7 +137,7 @@ namespace PDFToolbox.Helpers
             string name = Path.GetFileNameWithoutExtension(fPath);
 
             if (string.IsNullOrEmpty(dir))
-                fPath = _fileIO.SaveDirectoryDefault + fPath;
+                fPath = _fileIO.DefaultSaveDirectory + fPath;
 
             if (string.IsNullOrEmpty(ext))
                 fPath = fPath + (string.Compare(".", ext) == 0 ? "" : ".") + "pdf";
