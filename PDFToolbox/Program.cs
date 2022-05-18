@@ -22,11 +22,11 @@ namespace PDFToolbox
                 return;
             }
 
-            string defaultSaveLocation = "./";
             var toolbox = new Helpers.Toolbox();
             var pageFactory = new PageFactory();
             ILogger logger = new ConsoleLogger(ConsoleLogger.eDebuggerDetail.Log);
             var fileIO = new Helpers.FileIO(toolbox, logger);
+            string defaultSaveLocation = fileIO.SaveDirectoryDefault;
 
             IFileIOExtractor outlookExtractor = new Helpers.OutlookAttachmentExtractor(fileIO);
             IFileIOExtractor fileDropExtractor = new Helpers.FileDropExtractor();
