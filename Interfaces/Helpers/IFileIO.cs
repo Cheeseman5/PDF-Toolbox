@@ -18,5 +18,6 @@ namespace PDFToolbox.Interfaces.Helpers
 
         void CopyToTemp(string fPath);
         string MakeFilePathSafe(string fPath, string defaultSaveDirectory);
+        void CreateDirectory(string directoryPath);
     }
 }

@@ -146,6 +146,12 @@ namespace PDFToolbox.Helpers
                 _toolbox.MessageBoxException(e);
             }
         }
+
+        public void CreateDirectory(string directoryPath)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(directoryPath)))
+                Directory.CreateDirectory(Path.GetDirectoryName(directoryPath));
+        }
         #endregion
 
         #region Utils

@@ -66,22 +66,14 @@ namespace PDFToolbox.Helpers
             string srcDocPath;
             string targetFilePath = SafeFilePath(document.DocName);
             Stream stream;
-            iTextSharp.text.Image image;
-            PdfDictionary pageDict;
-            PdfImportedPage importedPage;
-            PdfContentByte contentByte;
             PdfCopy targetPdf;
             iTextSharp.text.Document doc;
-            PdfReader srcReader;
-            PdfCopy.PageStamp pageStamp;
 
             try
             {
-                if (!Directory.Exists(Path.GetDirectoryName(targetFilePath)))
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
+                _fileIO.CreateDirectory(targetFilePath);
 
                 stream = new FileStream(targetFilePath, FileMode.Create);
-
                 doc = new iTextSharp.text.Document();
                 targetPdf = new PdfCopy(doc, stream);
                 doc.Open();
@@ -90,47 +82,10 @@ namespace PDFToolbox.Helpers
                 {
                     srcDocPath = _fileIO.ToTempFileName(vm.DocName);
 
-                    // Copy pageDict from source...
-                    if (Path.GetExtension(srcDocPath).ToUpperInvariant() == ".PDF")
-                    {
-                        srcReader = new iTextSharp.text.pdf.PdfReader(srcDocPath);
-                        pageDict = srcReader.GetPageN(vm.Number);
-                        importedPage = targetPdf.GetImportedPage(srcReader, vm.Number);
-                        pageStamp = targetPdf.CreatePageStamp(importedPage);
-
-                        //add any strings
-                        foreach(UIString str in vm.Strings)
-                        {
-                            ColumnText.ShowTextAligned(pageStamp.GetOverContent(),
-                                iTextSharp.text.Element.ALIGN_LEFT,
-                                new iTextSharp.text.Phrase(str.String),
-                                (float)str.X,
-                                (float)(importedPage.Height - str.Y - (str.Height * 0.75)),
-                                0);
-                        }
-                        // apply any added rotation
-                        pageDict.Put(PdfName.ROTATE, new PdfNumber((vm.FlatRotation) % 360f));
-                        pageStamp.AlterContents();
-                        targetPdf.AddPage(importedPage);
-                        
-                        targetPdf.FreeReader(srcReader);
-                        srcReader.Close();
-                    }
-
-                    if (vm.ImageStream != null && targetPdf.NewPage())
-                    {
-                        contentByte = new PdfContentByte(targetPdf);
-
-                        image = iTextSharp.text.Image.GetInstance(vm.ImageStream);
-
-                        image.ScalePercent(72f / image.DpiX * 100);
-                        image.SetAbsolutePosition(0, 0);
-
-                        contentByte.AddImage(image);
-                        contentByte.ToPdf(targetPdf);
-
-                    }
+                    AddPdfPage(vm, srcDocPath, targetPdf);
+                    AddImageToPage(vm, targetPdf);
                 }
+
                 targetPdf.Close();
                 doc.Close();
                 stream.Close();
@@ -142,6 +97,60 @@ namespace PDFToolbox.Helpers
             catch (Exception e)
             {
                 _toolbox.MessageBoxException(e);
+            }
+        }
+        private void AddPdfPage(ViewModels.PageViewModel page, string srcDocPath, PdfCopy targetPdf)
+        {
+            if (Path.GetExtension(srcDocPath).ToUpperInvariant() != ".PDF")
+                return;
+            
+            PdfReader srcReader = new iTextSharp.text.pdf.PdfReader(srcDocPath);
+            PdfImportedPage preparedPage;
+
+            preparedPage = PreparePdfPage(page, srcReader, targetPdf);
+            
+            targetPdf.AddPage(preparedPage);
+
+            targetPdf.FreeReader(srcReader);
+            srcReader.Close();
+        }
+
+        private PdfImportedPage PreparePdfPage(ViewModels.PageViewModel page, PdfReader srcReader, PdfCopy targetPdf)
+        {
+            PdfDictionary pageDict = srcReader.GetPageN(page.Number);
+            PdfImportedPage importedPage = targetPdf.GetImportedPage(srcReader, page.Number);
+            PdfCopy.PageStamp pageStamp = targetPdf.CreatePageStamp(importedPage);
+
+            foreach (UIString str in page.Strings)
+            {
+                ColumnText.ShowTextAligned(pageStamp.GetOverContent(),
+                    iTextSharp.text.Element.ALIGN_LEFT,
+                    new iTextSharp.text.Phrase(str.String),
+                    (float)str.X,
+                    (float)(importedPage.Height - str.Y - (str.Height * 0.75)),
+                    0);
+            }
+            // apply any added rotation
+            pageDict.Put(PdfName.ROTATE, new PdfNumber((page.FlatRotation) % 360f));
+            pageStamp.AlterContents();
+
+            return importedPage;
+        }
+
+        private void AddImageToPage(ViewModels.PageViewModel page, PdfCopy targetPdf)
+        {
+            if (page.ImageStream != null && targetPdf.NewPage())
+            {
+                var contentByte = new PdfContentByte(targetPdf);
+
+                iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(page.ImageStream);
+
+                image.ScalePercent(72f / image.DpiX * 100);
+                image.SetAbsolutePosition(0, 0);
+
+                contentByte.AddImage(image);
+                contentByte.ToPdf(targetPdf);
+
             }
         }
         public string CopyToTemp(string fPath)
