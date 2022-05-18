@@ -52,8 +52,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseFileIOStrategy.cs" />
-    <Compile Include="BaseIOStrategy.cs" />
     <Compile Include="ConsoleLogger.cs" />
     <Compile Include="FileDropExtractor.cs" />
     <Compile Include="FileIO.cs" />
