@@ -9,12 +9,7 @@ namespace PDFToolbox.Helpers
     {
         public Models.FileIOInfo[] GetFileStreams(IDataObject data)
         {
-            if (data == null || !data.GetDataPresent(DataFormats.FileDrop))
-            {
-                return null;
-            }
-
-            var files = data.GetData(DataFormats.FileDrop) as string[];
+            var files = data?.GetData(DataFormats.FileDrop) as string[];
 
             if (files == null || files?.Length == 0)
             {
