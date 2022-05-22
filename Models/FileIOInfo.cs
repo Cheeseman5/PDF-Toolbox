@@ -1,18 +1,17 @@
 ﻿using System.IO;
 
-namespace PDFToolbox.Helpers
+namespace PDFToolbox.Models
 {
     public class FileIOInfo
     {
-        public Stream Stream { get; set; }
-        
+        public Stream Stream;
+
         private string _fullPath = "";
-        private bool _tempPath = false;
 
         /// <summary>
         /// Gets the file name and extension of FileIOInfo.FullFileName. <para>Sets the file name but not the extension of FileIOInfo.FullFileName.</para>
         /// </summary>
-        public string FileName 
+        public string FileName
         {
             get { return Path.GetFileName(_fullPath); }
             set { FullFileName = Directory + value + Extension; }
@@ -34,21 +33,12 @@ namespace PDFToolbox.Helpers
             get { return Path.GetDirectoryName(_fullPath); }
             set { FullFileName = value + Path.GetFileName(_fullPath); }
         }
+
+        public bool IsTempPath { get; set; }
+
         /// <summary>
         /// Gets the fully usable file path name. <para>Sets the fully usable file path name.</para>
         /// </summary>
-        public string FullFileName
-        {
-            get { return _fullPath; }
-            set { _fullPath = value; }
-        }
-        /// <summary>
-        /// True - FullFileName names a file that is in the temporary directory. <para>False - FullFileName names a file that is not in the temporary directory.</para>
-        /// </summary>
-        public bool IsTempPath
-        {
-            get { return _tempPath; }
-            set { _tempPath = value; }
-        }
+        public string FullFileName;
     }
 }

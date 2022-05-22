@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Linq;
 using System.IO;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
-
-//using iTextSharp.text.pdf;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace PDFToolbox.Helpers
 {
     public class Toolbox
     {
+        private string _defaultSaveLocation;
         #region Helper Reference Classes
         public class Info
         {
@@ -43,80 +41,78 @@ namespace PDFToolbox.Helpers
         public Debug debug { get; private set; } = new Debug();
         #endregion
 
-        #region Utils
-        // Find parent of 'child' of type 'T'
-        public T FindParent<T>(DependencyObject child) where T : DependencyObject
+        // Re-enable this when config/settings get pulled in better
+        //public Toolbox(string defaultSaveLocation)
+        //{
+        //    _defaultSaveLocation = defaultSaveLocation;
+        //}
+        // Remove this when the above ctor is enabled
+        public void SetDefaultSaveLocation(string defaultSaveLocation)
         {
-            do
-            {
-                if (child is T)
-                    return (T)child;
-                child = VisualTreeHelper.GetParent(child);
-            } while (child != null);
-            return null;
+            _defaultSaveLocation = defaultSaveLocation;
         }
-
-
-        #endregion
 
         #region File Handling
-
-        public void RemoveTemporaryFiles()
-        {
-            //IO.FileIO.Cleanup();
-        }
 
         public void CreateLocalSaveDir()
         {
             try
             {
-                //Directory.CreateDirectory(Path.GetDirectoryName(IO.FileIO.SaveDirectoryDefault));
+                Directory.CreateDirectory(Path.GetDirectoryName(_defaultSaveLocation));
             }
             catch (Exception e)
             {
-                //Toolbox.MessageBox("An error occured when attempting to create directory \"{0}\"\n\n{1}", Path.GetDirectoryName(IO.FileIO.SaveDirectoryDefault), e.Message);
+                string msg = $"An error occured when attempting to create directory \"{Path.GetDirectoryName(_defaultSaveLocation)}\"\n\n{e.Message}";
+                MessageBox(msg);
             }
         }
 
         #endregion
 
         #region UX Utils
-
-        public object MainWindow { get; set; }
-        //public Window MainWindow { get; set; }
+        public System.Windows.Controls.TextBox FindParent(System.Windows.Controls.TextBox child)
+        {
+            do
+            {
+                if (child is System.Windows.Controls.TextBox)
+                    return child;
+                child = child.Parent as System.Windows.Controls.TextBox;
+            } while (child != null);
+            return null;
+        }
 
         // 'Wires up' a TextBox to select the file name when getting focus
-        public void WireSelectNameOnFocus(object textBox) { }
-        //public void WireSelectNameOnFocus(TextBox textBox)
-        //{
-        //    bool active = false;
+        public void WireSelectNameOnFocus(System.Windows.Controls.TextBox textBox)
+        {
+            bool active = false;
 
-        //    textBox.LostFocus += new RoutedEventHandler((sender, e) =>
-        //        {
-        //            active = false;
-        //            // Remove selection when focus is lost
-        //            textBox.Select(0, 0);
-        //        });
+            textBox.LostFocus += new RoutedEventHandler((sender, e) =>
+                {
+                    active = false;
+                    // Remove selection when focus is lost
+                    textBox.Select(0, 0);
+                });
 
-        //    textBox.PreviewMouseUp += new System.Windows.Input.MouseButtonEventHandler( (sender, e) =>
-        //        {
-        //            TextBox tbx = FindParent<TextBox>(sender as DependencyObject);
+            textBox.MouseUp += new System.Windows.Input.MouseButtonEventHandler((sender, e) =>
+                {
+                    System.Windows.Controls.TextBox tbx = FindParent(sender as System.Windows.Controls.TextBox);
 
-        //            if (tbx == null)
-        //                return;
+                    if (tbx == null)
+                        return;
 
-        //            // If this is the first time clicking on the textbox...
-        //            if (!active)
-        //            {
-        //                // Leave selection alone if user selected text on first LeftMouseDown (textbox gets focus while user selects part of its text)
-        //                if (textBox.SelectionLength == 0)
-        //                {
-        //                    SelectFileName(textBox);
-        //                    active = true;
-        //                }
-        //            }
-        //        });
-        //}
+                    // If this is the first time clicking on the textbox...
+                    if (!active)
+                    {
+                        // Leave selection alone if user selected text on first LeftMouseDown
+                        //      (textbox gets focus while user selects part of its text)
+                        if (textBox.SelectionLength == 0)
+                        {
+                            SelectFileName(textBox);
+                            active = true;
+                        }
+                    }
+                });
+        }
 
         // Gets starting and ending points of filename within text
         private void FileNameTextSelection(string text, out int start, out int end)
@@ -132,47 +128,32 @@ namespace PDFToolbox.Helpers
             start = text.LastIndexOf(name);
             end = name.Length;
         }
-        // Sets textbox's selection to the filename within, selects nothing if no filename found
-        public void SelectFileName(object textbox) { }
-        //public static void SelectFileName(TextBox textbox)
-        //{
-        //    int start;
-        //    int end;
-        //    if (textbox != null)
-        //    {
-        //        FileNameTextSelection(textbox.Text, out start, out end);
 
-        //        textbox.Select(start, end);
-        //    }
-        //}
+        // Sets textbox's selection to the filename within, selects nothing if no filename found
+        public void SelectFileName(System.Windows.Controls.TextBox textbox)
+        {
+            int start;
+            int end;
+            if (textbox != null)
+            {
+                FileNameTextSelection(textbox.Text, out start, out end);
+
+                textbox.Select(start, end);
+            }
+        }
         #endregion
 
         #region Debugging
-        public void MessageBox(string msg) { }
-        //public void MessageBox(string msg)
-        //{
-        //    if(!Debug.SILENCE_MESSAGEBOX)
-        //        System.Windows.MessageBox.Show(msg, Debug.MESSAGEBOX_CAPTION);
-        //}
-        public void MessageBox(string msg, params object[] args) { }
-        //public void MessageBox(string msg, params object[] args)
-        //{
-        //    if (!Debug.SILENCE_MESSAGEBOX)
-        //        System.Windows.MessageBox.Show(string.Format(msg, args), Debug.MESSAGEBOX_CAPTION);
-        //}
-
-        public void MessageBoxException(Exception e) { }
-        //public void MessageBoxException(Exception e)
-        //{
-        //    if (!Debug.SILENCE_MESSAGEBOX)
-        //        System.Windows.MessageBox.Show(string.Format(Debug.MESSAGEBOX_EXCEPTION_MESSAGE, e.TargetSite, e.Message, e.StackTrace, ""), Debug.MESSAGEBOX_EXCEPTION_CAPTION);
-        //}
-        public void MessageBoxException(Exception e, string addlMsg) { }
-        //public void MessageBoxException(Exception e, string addlMsg)
-        //{
-        //    if (!Debug.SILENCE_MESSAGEBOX)
-        //        System.Windows.MessageBox.Show(string.Format(Debug.MESSAGEBOX_EXCEPTION_MESSAGE, e.TargetSite, e.Message, e.StackTrace, addlMsg), Debug.MESSAGEBOX_EXCEPTION_CAPTION);
-        //}
+        public void MessageBox(string msg)
+        {
+            if (!debug.SILENCE_MESSAGEBOX)
+                System.Windows.Forms.MessageBox.Show(msg, debug.MESSAGEBOX_CAPTION);
+        }
+        public void MessageBoxException(Exception e, string addlMsg = "")
+        {
+            if (!debug.SILENCE_MESSAGEBOX)
+                System.Windows.Forms.MessageBox.Show(string.Format(debug.MESSAGEBOX_EXCEPTION_MESSAGE, e.TargetSite, e.Message, e.StackTrace, addlMsg), debug.MESSAGEBOX_EXCEPTION_CAPTION);
+        }
 
         #endregion
     }

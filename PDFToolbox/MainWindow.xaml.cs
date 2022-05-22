@@ -53,8 +53,6 @@ namespace PDFToolbox
 
             Title = _toolbox.info.APP_CAPTION;
 
-            _toolbox.MainWindow = this;
-
             _pageViewAdornerLayer = new Adorners.PageViewFileDropAdorner(lbxPages);
             _viewModel = (ViewModels.MainViewModel)this.DataContext;
             _toolbox.WireSelectNameOnFocus(tbxDocumentName);
