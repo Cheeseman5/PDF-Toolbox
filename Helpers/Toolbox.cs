@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PDFToolbox.Interfaces;
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
@@ -8,48 +9,26 @@ namespace PDFToolbox.Helpers
 {
     public class Toolbox
     {
+        private IConfig _config;
         private string _defaultSaveLocation;
-        #region Helper Reference Classes
-        public class Info
+        private string _appVersion;
+        private string _messageboxCaption;
+        private string _messageboxExceptionCaption;
+        private bool _silenceMessagebox;
+        private string _messageboxExceptionMessage;
+        public string AppCaption { get; private set; }
+
+        public Toolbox(IConfig config)
         {
-            public readonly string APP_VERSION;
-            public readonly string APP_CAPTION;
+            _config = config;
+            _defaultSaveLocation = _config.DefaultSaveDirectory;
+            _appVersion = _config.AppVersion;
+            _messageboxCaption = _config.AppName;
+            _messageboxExceptionCaption = _messageboxCaption + ": Error";
+            _silenceMessagebox = _config.SilenceMessagebox;
+            _messageboxExceptionMessage = "An error occured in {0}:\n{1}\n\nStack trace:\n{2}\n\n{3}";
 
-            public Info()
-            {
-                APP_VERSION = "a0.6.4";
-                APP_CAPTION = "PDF Toolbox - " + APP_VERSION;
-            }
-
-        }
-        public Info info { get; private set; } = new Info();
-        public class Debug
-        {
-            public readonly bool SILENCE_MESSAGEBOX;
-            public readonly string MESSAGEBOX_CAPTION;
-            public readonly string MESSAGEBOX_EXCEPTION_CAPTION;
-            public readonly string MESSAGEBOX_EXCEPTION_MESSAGE;
-
-            public Debug()
-            {
-                SILENCE_MESSAGEBOX = false;
-                MESSAGEBOX_CAPTION = "PDF Toolbox";
-                MESSAGEBOX_EXCEPTION_CAPTION = MESSAGEBOX_CAPTION + ": Error";
-                MESSAGEBOX_EXCEPTION_MESSAGE = "An error occured in {0}:\n{1}\n\nStack trace:\n{2}\n\n{3}";
-            }
-        }
-        public Debug debug { get; private set; } = new Debug();
-        #endregion
-
-        // Re-enable this when config/settings get pulled in better
-        //public Toolbox(string defaultSaveLocation)
-        //{
-        //    _defaultSaveLocation = defaultSaveLocation;
-        //}
-        // Remove this when the above ctor is enabled
-        public void SetDefaultSaveLocation(string defaultSaveLocation)
-        {
-            _defaultSaveLocation = defaultSaveLocation;
+            AppCaption = $"{_config.AppName} - {_appVersion}";
         }
 
         #region File Handling
@@ -146,13 +125,13 @@ namespace PDFToolbox.Helpers
         #region Debugging
         public void MessageBox(string msg)
         {
-            if (!debug.SILENCE_MESSAGEBOX)
-                System.Windows.Forms.MessageBox.Show(msg, debug.MESSAGEBOX_CAPTION);
+            if (!_silenceMessagebox)
+                System.Windows.Forms.MessageBox.Show(msg, _messageboxCaption);
         }
         public void MessageBoxException(Exception e, string addlMsg = "")
         {
-            if (!debug.SILENCE_MESSAGEBOX)
-                System.Windows.Forms.MessageBox.Show(string.Format(debug.MESSAGEBOX_EXCEPTION_MESSAGE, e.TargetSite, e.Message, e.StackTrace, addlMsg), debug.MESSAGEBOX_EXCEPTION_CAPTION);
+            if (!_silenceMessagebox)
+                System.Windows.Forms.MessageBox.Show(string.Format(_messageboxExceptionMessage, e.TargetSite, e.Message, e.StackTrace, addlMsg), _messageboxExceptionCaption);
         }
 
         #endregion

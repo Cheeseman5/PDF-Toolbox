@@ -1,4 +1,5 @@
 ﻿using Factories;
+using Helpers;
 using PDFToolbox.Helpers;
 using PDFToolbox.Interfaces;
 using PDFToolbox.Interfaces.Helpers;
@@ -22,12 +23,12 @@ namespace PDFToolbox
                 return;
             }
 
-            var toolbox = new Helpers.Toolbox();
+            IConfig config = new DefaultConfig();
+            var toolbox = new Helpers.Toolbox(config);
             var pageFactory = new PageFactory();
             ILogger logger = new ConsoleLogger(ConsoleLogger.eDebuggerDetail.Log);
             var fileIO = new Helpers.FileIO(toolbox, logger);
             string defaultSaveLocation = fileIO.DefaultSaveDirectory;
-            toolbox.SetDefaultSaveLocation(defaultSaveLocation);
 
             IFileIOExtractor outlookExtractor = new Helpers.OutlookAttachmentExtractor(fileIO);
             IFileIOExtractor fileDropExtractor = new Helpers.FileDropExtractor();
