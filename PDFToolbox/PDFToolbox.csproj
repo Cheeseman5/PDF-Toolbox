@@ -160,21 +160,11 @@
     <Compile Include="Common\UIString.cs" />
     <Compile Include="Common\ViewModels\ViewModelBase.cs" />
     <Compile Include="Converters\ImageToSourceConverter.cs" />
-    <Compile Include="IO\BaseFileIOExtractor.cs" />
-    <Compile Include="IO\BaseIOStrategy.cs" />
-    <Compile Include="IO\FileDropExtractor.cs" />
-    <Compile Include="IO\FileIOInfo.cs" />
-    <Compile Include="IO\BaseFileIOStrategy.cs" />
-    <Compile Include="Helpers\D.cs" />
     <Compile Include="DocSnippet.cs" />
     <Compile Include="DocSnippet.Designer.cs">
       <DependentUpon>DocSnippet.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\DragDropHandler.cs" />
-    <Compile Include="IO\FileIO.cs" />
-    <Compile Include="IO\ImagesFileIO.cs" />
-    <Compile Include="IO\OutlookAttachmentExtractor.cs" />
-    <Compile Include="IO\PdfFileIO.cs" />
     <Compile Include="PDF\BasePdfConvert.cs" />
     <Compile Include="PDF\PdfConverter.cs" />
     <Compile Include="PDF\PdfConvertIText.cs" />
@@ -182,11 +172,6 @@
     <Compile Include="PDF\PdfItem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="SmartWrapPanel.cs" />
-    <Compile Include="Toolbox.cs" />
-    <Compile Include="ViewModels\DocumentViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\PageViewModel.cs" />
-    <Compile Include="ViewModels\PDFPageViewModel.cs" />
     <Compile Include="Views\PageView.xaml.cs">
       <DependentUpon>PageView.xaml</DependentUpon>
     </Compile>
@@ -295,6 +280,10 @@
     <ProjectReference Include="..\Models\Models.csproj">
       <Project>{DDA4FC6C-C6FA-4C3D-AC51-E262F297CACA}</Project>
       <Name>Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ViewModels\ViewModels.csproj">
+      <Project>{6954ba0c-2846-4e50-b47b-d755056cd819}</Project>
+      <Name>ViewModels</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
