@@ -38,6 +38,7 @@
       <HintPath>..\packages\PdfiumViewer.2.7.0.0\lib\net20\PdfiumViewer.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -55,7 +56,6 @@
     <Compile Include="ConsoleLogger.cs" />
     <Compile Include="FileDropExtractor.cs" />
     <Compile Include="FileIO.cs" />
-    <Compile Include="FileIOInfo.cs" />
     <Compile Include="OutlookAttachmentExtractor.cs" />
     <Compile Include="PdfFileIO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
