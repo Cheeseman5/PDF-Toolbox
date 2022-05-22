@@ -1,4 +1,5 @@
-﻿using PDFToolbox.Interfaces.Helpers;
+﻿using PDFToolbox.Interfaces;
+using PDFToolbox.Interfaces.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,11 +10,11 @@ namespace PDFToolbox.Helpers
 {
     public class OutlookAttachmentExtractor : IFileIOExtractor
     {
-        private FileIO _fileIO;
+        private IConfig _config;
 
-        public OutlookAttachmentExtractor(FileIO fileIO)
+        public OutlookAttachmentExtractor(IConfig config)
         {
-            _fileIO = fileIO;
+            _config = config;
         }
 
         public Models.FileIOInfo[] GetFileStreams(IDataObject data)
@@ -26,7 +27,7 @@ namespace PDFToolbox.Helpers
             }
 
             string fileName = GetAttachmentFileName(stream);
-            string tmpPath = _fileIO.DefaultTempSaveDirectory;
+            string tmpPath = _config.DefaultTempSaveDirectory;
 
             Models.FileIOInfo info = GetFileData(data, tmpPath, fileName);
 
