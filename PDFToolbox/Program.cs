@@ -27,6 +27,7 @@ namespace PDFToolbox
             ILogger logger = new ConsoleLogger(ConsoleLogger.eDebuggerDetail.Log);
             var fileIO = new Helpers.FileIO(toolbox, logger);
             string defaultSaveLocation = fileIO.DefaultSaveDirectory;
+            toolbox.SetDefaultSaveLocation(defaultSaveLocation);
 
             IFileIOExtractor outlookExtractor = new Helpers.OutlookAttachmentExtractor(fileIO);
             IFileIOExtractor fileDropExtractor = new Helpers.FileDropExtractor();
