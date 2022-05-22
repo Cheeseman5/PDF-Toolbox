@@ -19,20 +19,22 @@ namespace PDFToolbox.Helpers
         private PageFactory _pageFactory;
         private Toolbox _toolbox;
         private IFileIO _fileIO;
+        private IConfig _config;
         private string _defaultSaveDirectory;
         public string[] SupportedExtentions { get; set; }
-        public PdfFileIO(Toolbox toolbox, IFileIO fileIO, PageFactory pageFactory, string defaultSaveDirectory)
+        public PdfFileIO(Toolbox toolbox, IFileIO fileIO, PageFactory pageFactory, IConfig config)
         {
             _pageFactory = pageFactory;
             _toolbox = toolbox;
             _fileIO = fileIO;
-            _defaultSaveDirectory = defaultSaveDirectory;
+            _config = config;
+            _defaultSaveDirectory = _config.DefaultSaveDirectory;
             SupportedExtentions = new string[1];
 
             SetSupportedExtensions("PDF");
         }
 
-        public Document LoadDocument(Models.FileIOInfo info)
+        public Document LoadDocument(FileIOInfo info)
         {
             //FIXME: handle temp file paths moar better...
             string tmpFile = CopyToTemp(info.FullFileName);
@@ -46,7 +48,7 @@ namespace PDFToolbox.Helpers
 
             return document;
         }
-        private Document ConstructDocument(string filePath, Models.FileIOInfo info)
+        private Document ConstructDocument(string filePath, FileIOInfo info)
         {
             Document document = _pageFactory.CreateDocument();
 

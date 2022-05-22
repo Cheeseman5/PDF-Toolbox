@@ -51,7 +51,7 @@ namespace PDFToolbox
             _toolbox = toolbox;
             _fileIO = fileIO;
 
-            Title = _toolbox.info.APP_CAPTION;
+            Title = _toolbox.AppCaption;
 
             _pageViewAdornerLayer = new Adorners.PageViewFileDropAdorner(lbxPages);
             _viewModel = (ViewModels.MainViewModel)this.DataContext;

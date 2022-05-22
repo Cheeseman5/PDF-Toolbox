@@ -13,28 +13,28 @@ namespace PDFToolbox.Helpers
         private List<IFileIOExtractor> _fileExtractors;
         private Toolbox _toolbox;
         private ILogger _logger;
+        private IConfig _config;
 
         public readonly string DefaultSaveDirectory;
         public readonly string TempSavePrefix;
         public readonly string DefaultTempSaveDirectory;
-        
-
-        public FileIO(Toolbox toolbox, ILogger logger)
+        public FileIO(Toolbox toolbox, ILogger logger, IConfig config)
         {
             _toolbox = toolbox;
             _logger = logger;
+            _config = config;
             _fileLoaders = new Dictionary<string, IFileIOStrategy>();
             _fileExtractors = new List<IFileIOExtractor>();
 
             string tempPath = Path.GetTempPath();
             string defaultTempSaveDirectory = tempPath;
-            if(string.IsNullOrEmpty(tempPath))
+            if (string.IsNullOrEmpty(tempPath))
             {
-                defaultTempSaveDirectory = ".\\temp\\";
+                defaultTempSaveDirectory = _config.DefaultTempSaveDirectory;
             }
             DefaultTempSaveDirectory = defaultTempSaveDirectory;
-            TempSavePrefix = "_tmp_";
-            DefaultSaveDirectory = ".\\PDFToolbox\\";
+            TempSavePrefix = _config.TempSavePrefix;
+            DefaultSaveDirectory = _config.DefaultSaveDirectory;
         }
 
         public void RegisterStrategy(IFileIOStrategy strategy)
