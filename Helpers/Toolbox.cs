@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media;
 
 namespace PDFToolbox.Helpers
 {
@@ -60,40 +62,40 @@ namespace PDFToolbox.Helpers
             }
             catch (Exception e)
             {
-                MessageBox("An error occured when attempting to create directory \"{0}\"\n\n{1}", Path.GetDirectoryName(IO.FileIO.SaveDirectoryDefault), e.Message);
+                string msg = $"An error occured when attempting to create directory \"{Path.GetDirectoryName(_defaultSaveLocation)}\"\n\n{e.Message}";
+                MessageBox(msg);
             }
         }
 
         #endregion
 
         #region UX Utils
-        public TextBox FindParent(Control control)
+        public System.Windows.Controls.TextBox FindParent(System.Windows.Controls.TextBox child)
         {
             do
             {
-                if (control is TextBox)
-                    return (TextBox) control;
-                control = control.Parent;
-            } while (control != null);
+                if (child is System.Windows.Controls.TextBox)
+                    return child;
+                child = child.Parent as System.Windows.Controls.TextBox;
+            } while (child != null);
             return null;
         }
 
         // 'Wires up' a TextBox to select the file name when getting focus
-        //public void WireSelectNameOnFocus(object textBox) { }
-        public void WireSelectNameOnFocus(TextBox textBox)
+        public void WireSelectNameOnFocus(System.Windows.Controls.TextBox textBox)
         {
             bool active = false;
 
-            textBox.LostFocus += new EventHandler((sender, e) =>
+            textBox.LostFocus += new RoutedEventHandler((sender, e) =>
                 {
                     active = false;
                     // Remove selection when focus is lost
                     textBox.Select(0, 0);
                 });
 
-            textBox.MouseUp += new MouseEventHandler((sender, e) =>
+            textBox.MouseUp += new System.Windows.Input.MouseButtonEventHandler((sender, e) =>
                 {
-                    TextBox tbx = FindParent(sender as Control);
+                    System.Windows.Controls.TextBox tbx = FindParent(sender as System.Windows.Controls.TextBox);
 
                     if (tbx == null)
                         return;
@@ -128,7 +130,7 @@ namespace PDFToolbox.Helpers
         }
 
         // Sets textbox's selection to the filename within, selects nothing if no filename found
-        public void SelectFileName(System.Windows.Forms.TextBox textbox)
+        public void SelectFileName(System.Windows.Controls.TextBox textbox)
         {
             int start;
             int end;
