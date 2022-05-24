@@ -14,7 +14,7 @@ namespace PDFToolbox.PDF
         public static PdfData ConvertToPdfData(string fileName, int pageNum)
         {
             if ((string.IsNullOrEmpty(fileName) || string.IsNullOrWhiteSpace(fileName)) && pageNum <= 0) return null;
-            Helpers.D.Log("PdfConvertIText.ConvertToPdfData({0}, {1})", fileName,pageNum);
+            //Helpers.D.Log("PdfConvertIText.ConvertToPdfData({0}, {1})", fileName,pageNum);
             PdfData data = new PdfData();
             PdfContentParser parser;// = new PdfContentParser();
             PRTokeniser tokeniser = new PRTokeniser(fileName);
@@ -26,7 +26,7 @@ namespace PDFToolbox.PDF
             dict = parser.ReadDictionary();
             //dict.Contains(PdfName.IMAGE)
             items = parser.Parse(parser.ReadArray().ArrayList);
-            Helpers.D.Log("PdfConvertIText.ConvertToPdfData: {0} | {1}", items.Count, string.Join(", ", items.ToArray()));
+            //Helpers.D.Log("PdfConvertIText.ConvertToPdfData: {0} | {1}", items.Count, string.Join(", ", items.ToArray()));
 
             return data;
         }

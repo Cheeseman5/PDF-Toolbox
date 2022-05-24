@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ptb="clr-namespace:PDFToolbox"
-                    xmlns:localVMs="clr-namespace:PDFToolbox.ViewModels">
+                    xmlns:localVMs="clr-namespace:PDFToolbox.ViewModels;assembly=ViewModels">
 
     <Style x:Key="DefaultPdfPageStyle" TargetType="Image">
         <Setter Property="Control.DataContext">
@@ -31,7 +31,7 @@
             <Setter.Value>
                 <ControlTemplate>
                     <Border>
-                        <Rectangle Margin="2" StrokeThickness="1" Stroke="#600000000" StrokeDashArray="1 2"/>
+                        <Rectangle Margin="2" StrokeThickness="1" Stroke="Black" StrokeDashArray="1 2"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

@@ -49,13 +49,13 @@ namespace PDFToolbox.Helpers
         #endregion
 
         #region UX Utils
-        public System.Windows.Controls.TextBox FindParent(System.Windows.Controls.TextBox child)
+        public T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             do
             {
-                if (child is System.Windows.Controls.TextBox)
-                    return child;
-                child = child.Parent as System.Windows.Controls.TextBox;
+                if (child is T)
+                    return (T)child;
+                child = VisualTreeHelper.GetParent(child);
             } while (child != null);
             return null;
         }
@@ -74,7 +74,7 @@ namespace PDFToolbox.Helpers
 
             textBox.MouseUp += new System.Windows.Input.MouseButtonEventHandler((sender, e) =>
                 {
-                    System.Windows.Controls.TextBox tbx = FindParent(sender as System.Windows.Controls.TextBox);
+                    System.Windows.Controls.TextBox tbx = FindParent<System.Windows.Controls.TextBox>((DependencyObject)sender);
 
                     if (tbx == null)
                         return;

@@ -3,7 +3,6 @@ using Helpers;
 using PDFToolbox.Helpers;
 using PDFToolbox.Interfaces;
 using PDFToolbox.Interfaces.Helpers;
-using PDFToolbox.IO;
 using System;
 using System.Reflection;
 using System.Windows;
@@ -12,17 +11,8 @@ namespace PDFToolbox
 {
     public class Program
     {
-        private const bool USE_REFACTORED_CODE = false;
         private static void GenerateDependencied()
         {
-            Window wnd;
-            if (!USE_REFACTORED_CODE)
-            {
-                wnd = new MainWindow();
-                wnd.Show();
-                return;
-            }
-
             IConfig config = new DefaultConfig();
             var toolbox = new Helpers.Toolbox(config);
             var pageFactory = new PageFactory();
@@ -40,7 +30,7 @@ namespace PDFToolbox
             // Register normal 
             fileIO.RegisterStrategy(pdfFileIO);
 
-            wnd = new MainWindow(toolbox, fileIO);
+            var wnd = new MainWindow(toolbox, fileIO);
             wnd.Show();
 
         }

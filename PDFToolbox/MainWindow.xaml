@@ -5,7 +5,7 @@
         
         xmlns:ptb="clr-namespace:PDFToolbox"
         xmlns:localViews="clr-namespace:PDFToolbox.Views"
-        xmlns:localVMs="clr-namespace:PDFToolbox.ViewModels"
+        xmlns:localVMs="clr-namespace:PDFToolbox.ViewModels;assembly=ViewModels"
         xmlns:localAdorners="clr-namespace:PDFToolbox.Adorners"
         xmlns:localConverters="clr-namespace:PDFToolbox.Converters"
         Title="PDF Toolbox" Height="500" Width="720" Background="#FFCCDAFF" MinWidth="400" MinHeight="200" Closing="winMain_Closing">
@@ -93,7 +93,7 @@
                         </ListBox.Resources>
                     </ListBox>
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="#FF6491B6"/>
-                    <ListBox Name="lbxPages" ItemsSource="{Binding SelectedDocument.Pages}" ItemTemplate="{Binding localVMs:PageViewModel}" Background="#FFAFDBFF" 
+                    <ListBox Name="lbxPages" ItemsSource="{Binding SelectedDocument.Pages}" ItemTemplate="{Binding localVMs.PageViewModel}" Background="#FFAFDBFF" 
                              SelectedItem="{Binding SelectedPage, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" SelectionMode="Extended"
                              AllowDrop="True" Drop="lbxPages_Drop" DragEnter="lbxPages_DragEnter"
                              PreviewMouseLeftButtonDown="lbxPages_PreviewMouseLeftButtonDown" PreviewMouseMove="lbxPages_PreviewMouseMove">
