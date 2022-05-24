@@ -7,7 +7,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 //using PdfSharp.Pdf;
-using PDFToolbox.IO;
 
 namespace PDFToolbox
 {
@@ -23,27 +22,6 @@ namespace PDFToolbox
 
         private Helpers.Toolbox _toolbox;
         private Helpers.FileIO _fileIO;
-
-        public MainWindow()
-        {
-            InitializeComponent();
-
-            Title = Toolbox.Info.APP_CAPTION;
-
-            Toolbox.MainWindow = this;
-            
-            _pageViewAdornerLayer = new Adorners.PageViewFileDropAdorner(lbxPages);
-            _viewModel = (ViewModels.MainViewModel)this.DataContext;
-            Toolbox.WireSelectNameOnFocus(tbxDocumentName);
-
-            Toolbox.CreateLocalSaveDir();
-
-            // Register Extractors (pre-loaders)
-            FileIO.RegisterStrategy(new OutlookAttachmentExtractor());
-            FileIO.RegisterStrategy(new FileDropExtractor());
-            // Register normal 
-            FileIO.RegisterStrategy(new PdfFileIO());
-        }
 
         public MainWindow(Helpers.Toolbox toolbox, Helpers.FileIO fileIO)
         {
@@ -72,7 +50,7 @@ namespace PDFToolbox
             {
 
                 ViewModels.PageViewModel draggedPage = e.Data.GetData(typeof(ViewModels.PageViewModel)) as ViewModels.PageViewModel;
-                ListBoxItem lbxItemDropTarget = Toolbox.FindParent<ListBoxItem>(hit.VisualHit);
+                ListBoxItem lbxItemDropTarget = _toolbox.FindParent<ListBoxItem>(hit.VisualHit);
                 ViewModels.PageViewModel targetPage;
 
                 // Move pageDict to last element if dropped on blank-space
@@ -109,7 +87,7 @@ namespace PDFToolbox
 
             // Existing doc/pageDict drop - move item
             HitTestResult hit = VisualTreeHelper.HitTest(sender as ListBox, e.GetPosition(sender as ListBox));
-            ListBoxItem lbxItemDropTarget = Toolbox.FindParent<ListBoxItem>(hit.VisualHit);
+            ListBoxItem lbxItemDropTarget = _toolbox.FindParent<ListBoxItem>(hit.VisualHit);
             ViewModels.DocumentViewModel targetDoc = null;
 
             if (lbxItemDropTarget != null)
@@ -154,7 +132,7 @@ namespace PDFToolbox
             }
 
             // File-Drop - Load files
-            Models.Document[] dropFiles = FileIO.ExtractDocument(e.Data);
+            Models.Document[] dropFiles = _fileIO.ExtractDocument(e.Data);
 
             if (dropFiles != null && dropFiles.Length > 0)
             {
@@ -205,7 +183,7 @@ namespace PDFToolbox
             if (!Helpers.DragDropHandler.IsDragging(_docsDropData, e))
                 return;
 
-            lbxItem = Toolbox.FindParent<ListBoxItem>((DependencyObject)e.OriginalSource);
+            lbxItem = _toolbox.FindParent<ListBoxItem>((DependencyObject)e.OriginalSource);
 
             if (null == lbxItem)
                 return;
@@ -227,7 +205,7 @@ namespace PDFToolbox
             if (!Helpers.DragDropHandler.IsDragging(_pagesDropData, e))
                 return;
 
-            lbxItem = Toolbox.FindParent<ListBoxItem>((DependencyObject)e.OriginalSource);
+            lbxItem = _toolbox.FindParent<ListBoxItem>((DependencyObject)e.OriginalSource);
 
             if (lbxItem == null)
                 return;
@@ -244,14 +222,14 @@ namespace PDFToolbox
                 }
                 catch (Exception exception)
                 {
-                    Toolbox.MessageBoxException(exception);
+                    _toolbox.MessageBoxException(exception);
                 }
             }
         }
 
         private void tbxDocumentName_MouseButton(object sender, MouseButtonEventArgs e)
         {
-            TextBox box = Toolbox.FindParent<TextBox>(e.OriginalSource as DependencyObject);
+            TextBox box = _toolbox.FindParent<TextBox>(e.OriginalSource as DependencyObject);
 
             if (box == null)
                 return;
@@ -271,7 +249,7 @@ namespace PDFToolbox
 
         private void SelectDocName(TextBox textBox)
         {
-            Toolbox.SelectFileName(textBox);
+            _toolbox.SelectFileName(textBox);
 
             /*if (textBox != null)
                 textBox.Select((int)selection.X, (int)selection.Y);*/
@@ -301,7 +279,7 @@ namespace PDFToolbox
 
         private void winMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            IO.FileIO.Cleanup();
+            //_fileIO.Cleanup();
         }
 
         
