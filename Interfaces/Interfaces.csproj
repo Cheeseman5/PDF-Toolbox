@@ -33,7 +33,9 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
+    <Reference Include="System.Collections" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Linq" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\IDocumentController.cs" />
+    <Compile Include="Factories\IPageFactory.cs" />
     <Compile Include="Helpers\IFileIO.cs" />
     <Compile Include="Helpers\IFileIOExtractor.cs" />
     <Compile Include="Helpers\IFileIOStrategy.cs" />
@@ -51,7 +55,6 @@
     <Compile Include="ISystemFileRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Models\Models.csproj">
       <Project>{dda4fc6c-c6fa-4c3d-ac51-e262f297caca}</Project>
