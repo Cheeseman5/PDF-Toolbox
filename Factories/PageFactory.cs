@@ -1,8 +1,9 @@
-﻿using PDFToolbox.Models;
+﻿using PDFToolbox.Interfaces.Factories;
+using PDFToolbox.Models;
 
 namespace Factories
 {
-    public class PageFactory
+    public class PageFactory : IPageFactory
     {
         private int currentID = 0;
 

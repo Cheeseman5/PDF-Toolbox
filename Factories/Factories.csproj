@@ -49,6 +49,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{A32410BC-B5BF-4E59-A970-E3734736B70B}</Project>
+      <Name>Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Models\Models.csproj">
       <Project>{DDA4FC6C-C6FA-4C3D-AC51-E262F297CACA}</Project>
       <Name>Models</Name>
