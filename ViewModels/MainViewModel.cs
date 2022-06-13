@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using Factories;
+using PDFToolbox.Controllers;
+using PDFToolbox.Interfaces.Controllers;
+using PDFToolbox.Interfaces.Factories;
+using PDFToolbox.Models;
 
 namespace PDFToolbox.ViewModels
 {
@@ -72,44 +76,28 @@ namespace PDFToolbox.ViewModels
         #endregion
 
         public readonly string[] SUPPORTED_FILE_TYPES = { ".PDF" };
-        private PageFactory _pageFactory;
+        private IPageFactory _pageFactory;
+        private IDocumentController _documentController;
         
         // Needed for data-binding in XML: MainWindow.xaml
         public MainViewModel()
         {
             _pageFactory = new PageFactory();
+            _documentController = new DocumentController(_pageFactory);
         }
-        public MainViewModel(PageFactory pageFactory)
+        public MainViewModel(IPageFactory pageFactory, IDocumentController documentController)
         {
             _pageFactory = pageFactory;
+            _documentController = documentController;
         }
         public void SplitDocument(DocumentViewModel docVM, int splitInterval)
         {
-            if (docVM == null || splitInterval <= 0)
+            List<Document> documents = _documentController.SplitDocument(docVM.Document, splitInterval) as List<Document>;
+
+            foreach (Document document in documents)
             {
-                return;
-            }
-
-            DocumentViewModel newDocVM = docVM;
-
-            while (docVM.PageCount > splitInterval)
-            {
-                // current doc VM reached its goal page-count - start the next one...
-                if (newDocVM.PageCount >= splitInterval)
-                {
-                    Models.Document newDoc = _pageFactory.CreateDocument();
-
-                    newDoc.FileName = docVM.DocName;
-                    newDoc.Image = docVM.Pages[0].Image;
-
-                    newDocVM = new DocumentViewModel(newDoc);
-                    Documents.Add(newDocVM);
-                }
-                else
-                {
-                    newDocVM.Pages.Add(docVM.Pages[splitInterval]);
-                    docVM.Pages.RemoveAt(splitInterval);
-                }
+                var newDocVM = new DocumentViewModel(document);
+                Documents.Add(newDocVM);
             }
         }
 
@@ -149,7 +137,7 @@ namespace PDFToolbox.ViewModels
             }
             if (oldDoc.Pages == null || !oldDoc.Pages.Contains(page))
             {
-                throw new KeyNotFoundException(page + " not contained within " + oldDoc.Pages);
+                throw new KeyNotFoundException(page + " not contained within " + oldDoc?.Pages);
             }
             if (null == newDoc)
             {

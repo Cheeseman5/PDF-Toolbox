@@ -58,9 +58,17 @@
     <Compile Include="ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Controllers\Controllers.csproj">
+      <Project>{A513FD7B-1CB2-4A27-BF8A-2ED64FC70F7F}</Project>
+      <Name>Controllers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Factories\Factories.csproj">
       <Project>{CC2787B9-B650-4527-835E-C886B509AACA}</Project>
       <Name>Factories</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{A32410BC-B5BF-4E59-A970-E3734736B70B}</Project>
+      <Name>Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Models\Models.csproj">
       <Project>{dda4fc6c-c6fa-4c3d-ac51-e262f297caca}</Project>

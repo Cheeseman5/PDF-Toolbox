@@ -9,6 +9,13 @@ namespace PDFToolbox.ViewModels
     public class DocumentViewModel : ViewModelBase
     {
         private Models.Document _doc = null;
+        public Models.Document Document
+        { 
+            get 
+            { 
+                return _doc; 
+            } 
+        }
         public ObservableCollection<ViewModels.PageViewModel> Pages { get; private set; }
 
         public DocumentViewModel(Models.Document document)
