@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Collections" />
     <Reference Include="System.Core" />
@@ -43,13 +44,16 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\IDocumentController.cs" />
+    <Compile Include="Controllers\IWindowController.cs" />
     <Compile Include="Factories\IPageFactory.cs" />
     <Compile Include="Helpers\IFileIO.cs" />
     <Compile Include="Helpers\IFileIOExtractor.cs" />
     <Compile Include="Helpers\IFileIOStrategy.cs" />
+    <Compile Include="Helpers\IToolbox.cs" />
     <Compile Include="IConfig.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="ISystemFileRepository.cs" />

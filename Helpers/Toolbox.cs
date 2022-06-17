@@ -1,13 +1,13 @@
 ﻿using PDFToolbox.Interfaces;
+using PDFToolbox.Interfaces.Helpers;
 using System;
 using System.IO;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Media;
 
 namespace PDFToolbox.Helpers
 {
-    public class Toolbox
+    public class Toolbox : IToolbox
     {
         private IConfig _config;
         private string _defaultSaveLocation;
